@@ -16,6 +16,7 @@ local Constants = require("monster_manual_scripts.Constants")
 ---@field ShotSpeed number
 ---@field Luck integer
 ---@field Flags integer
+---@field ItemDrops integer
 
 ---@class MonsterManualInfo
 ---@field NumGreenUpgrades integer
@@ -32,6 +33,12 @@ local Constants = require("monster_manual_scripts.Constants")
 ---@field sprites Sprite[]
 ---@field currentlySelected integer
 ---@field frameUsed integer
+
+---@class ItemDropData
+---@field itemDrop ItemDrops
+---@field roomCount integer
+---@field onDrop fun(familiar: EntityFamiliar)
+
 
 ------------------------------------------------
 ---- DECLARING SAVE MANAGER --------------------
@@ -58,6 +65,7 @@ TSIL.SaveManager.AddPersistentVariable(
     TSIL.Enums.VariablePersistenceMode.RESET_RUN
 )
 
+
 ------------------------------------------------
 ---- MAIN SCRIPTS ------------------------------
 ------------------------------------------------
@@ -68,9 +76,30 @@ require("monster_manual_scripts.StatsUI")
 
 
 ------------------------------------------------
+---- ITEM DROPS --------------------------------
+------------------------------------------------
+require("monster_manual_scripts.ItemDrops.BatteriesDrop")
+require("monster_manual_scripts.ItemDrops.PillDrop")
+require("monster_manual_scripts.ItemDrops.RedHeartDrop")
+require("monster_manual_scripts.ItemDrops.RuneDrop")
+
+
+------------------------------------------------
 ---- UPGRADE SCRIPTS ---------------------------
 ------------------------------------------------
+require("monster_manual_scripts.Upgrades.BrainWormUpgrade")
+require("monster_manual_scripts.Upgrades.CrystalBallUpgrade")
 require("monster_manual_scripts.Upgrades.DamageUpgrade")
+require("monster_manual_scripts.Upgrades.EatFiveBatteriesUpgrade")
 require("monster_manual_scripts.Upgrades.FireRateUpgrade")
+require("monster_manual_scripts.Upgrades.HookWormUpgrade")
+require("monster_manual_scripts.Upgrades.KetamineBabyUpgrade")
+require("monster_manual_scripts.Upgrades.KissesUpgrade")
+require("monster_manual_scripts.Upgrades.LazyWormUpgrade")
 require("monster_manual_scripts.Upgrades.LuckUpgrade")
+require("monster_manual_scripts.Upgrades.MonocularUpgrade")
+require("monster_manual_scripts.Upgrades.PulseWormUpgrade")
+require("monster_manual_scripts.Upgrades.RingWormUpgrade")
 require("monster_manual_scripts.Upgrades.ShotSpeedUpgrade")
+require("monster_manual_scripts.Upgrades.SoyBeansUpgrade")
+require("monster_manual_scripts.Upgrades.WiggleWormUpgrade")

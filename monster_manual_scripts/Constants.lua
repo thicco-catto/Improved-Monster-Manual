@@ -38,4 +38,12 @@ Constants.UI_ARROW_SPRITE:ReplaceSpritesheet(0, "gfx/ui/arrow.png")
 Constants.UI_ARROW_SPRITE:LoadGraphics()
 Constants.UI_ARROW_SPRITE:Play("Idle", true)
 
+---@enum ItemDrops
+Constants.ItemDrops = {
+	BATTERY = 1 << 0,
+	RED_HEART = 1 << 1,
+	PILL = 1 << 2,
+	RUNE = 1 << 3
+}
+
 return Constants

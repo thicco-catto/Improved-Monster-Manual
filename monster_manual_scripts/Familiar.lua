@@ -1,5 +1,6 @@
 local Familiar = {}
 local Constants = require("monster_manual_scripts.Constants")
+local ItemDrop = require("monster_manual_scripts.ItemDrop")
 
 ---@param player EntityPlayer
 function Familiar:OnFamiliarCache(player)
@@ -19,6 +20,7 @@ function Familiar:OnFamiliarCache(player)
         player:GetCollectibleRNG(CollectibleType.COLLECTIBLE_MONSTER_MANUAL)
     )
 end
+
 ImprovedMonsterManualMod:AddCallback(
     ModCallbacks.MC_EVALUATE_CACHE,
     Familiar.OnFamiliarCache,
@@ -30,6 +32,7 @@ ImprovedMonsterManualMod:AddCallback(
 function Familiar:OnFamiliarInit(familiar)
     familiar:AddToFollowers()
 end
+
 ImprovedMonsterManualMod:AddCallback(
     ModCallbacks.MC_FAMILIAR_INIT,
     Familiar.OnFamiliarInit,
@@ -127,4 +130,30 @@ ImprovedMonsterManualMod:AddCallback(
     ModCallbacks.MC_FAMILIAR_UPDATE,
     Familiar.OnFamiliarUpdate,
     Constants.FamiliarVariant.MONSTER_MANUAL_FAMILIAR
+)
+
+
+function Familiar:OnRoomClear()
+    local monsterManualFamiliars = TSIL.EntitySpecific.GetFamiliars(
+        Constants.FamiliarVariant.MONSTER_MANUAL_FAMILIAR
+    )
+
+    TSIL.Utils.Tables.ForEach(monsterManualFamiliars, function(_, familiar)
+        local player = familiar.Player
+        local playerIndex = TSIL.Players.GetPlayerIndex(player)
+
+        local familiarStatsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
+            ImprovedMonsterManualMod,
+            Constants.SaveKeys.PLAYERS_FAMILIAR_STATS
+        )
+
+        ---@type MonsterManualStats
+        local familiarStats = familiarStatsPerPlayer[tostring(playerIndex)]
+
+        ItemDrop.TriggerDrops(familiar, familiarStats)
+    end)
+end
+ImprovedMonsterManualMod:AddCallback(
+    ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD,
+    Familiar.OnRoomClear
 )
