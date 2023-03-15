@@ -119,4 +119,34 @@ function FamiliarUpgrade.GetRandomUpgrades(rng, monsterManualInfo)
 end
 
 
+---@param upgradeToCheck FamiliarUpgrade
+function FamiliarUpgrade.IsUpgradeGreen(upgradeToCheck)
+    local found = TSIL.Utils.Tables.FindFirst(RepeatableFamiliarUpgrades, function (_, upgrade)
+        return upgrade.sprite == upgradeToCheck.sprite
+    end)
+
+    return found ~= nil
+end
+
+
+---@param upgradeToCheck FamiliarUpgrade
+function FamiliarUpgrade.IsUpgradeBlue(upgradeToCheck)
+    local found = TSIL.Utils.Tables.FindFirst(BlueFamiliarUpgrades, function (_, upgrade)
+        return upgrade.sprite == upgradeToCheck.sprite
+    end)
+
+    return found ~= nil
+end
+
+
+---@param upgradeToCheck FamiliarUpgrade
+function FamiliarUpgrade.IsUpgradeYellow(upgradeToCheck)
+    local found = TSIL.Utils.Tables.FindFirst(YellowFamiliarUpgrades, function (_, upgrade)
+        return upgrade.sprite == upgradeToCheck.sprite
+    end)
+
+    return found ~= nil
+end
+
+
 return FamiliarUpgrade

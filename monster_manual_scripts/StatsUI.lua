@@ -2,6 +2,7 @@ local StatsUI = {}
 
 local Constants = require("monster_manual_scripts.Constants")
 local Helpers = require("monster_manual_scripts.Helpers")
+local FamiliarUpgrade = require("monster_manual_scripts.FamiliarUpgrade")
 
 
 ---@param player EntityPlayer
@@ -20,7 +21,30 @@ local function CheckPlayerChoosing(player, data)
         ---@type MonsterManualStats
         local familiarStats = familiarStatsPerPlayer[tostring(playerIndex)]
 
-        data.upgrades[data.currentlySelected].onActivate(familiarStats)
+        local upgrade = data.upgrades[data.currentlySelected]
+
+        upgrade.onActivate(familiarStats)
+
+        ---@type MonsterManualInfo[]
+        local monsterManualInfoPerPlayer = TSIL.SaveManager.GetPersistentVariable(
+            ImprovedMonsterManualMod,
+            Constants.SaveKeys.PLAYERS_MONSTER_MANUAL_INFO
+        )
+        local monsterManualInfo = monsterManualInfoPerPlayer[tostring(playerIndex)]
+
+        monsterManualInfo.UpgradesChosen[#monsterManualInfo.UpgradesChosen+1] = upgrade.sprite
+
+        if FamiliarUpgrade.IsUpgradeGreen(upgrade) then
+            monsterManualInfo.NumGreenUpgrades = monsterManualInfo.NumGreenUpgrades + 1
+        end
+
+        if FamiliarUpgrade.IsUpgradeBlue(upgrade) then
+            monsterManualInfo.NumBlueUpgrades = monsterManualInfo.NumBlueUpgrades + 1
+        end
+
+        if FamiliarUpgrade.IsUpgradeYellow(upgrade) then
+            monsterManualInfo.NumYellowUpgrades = monsterManualInfo.NumYellowUpgrades + 1
+        end
 
         return true
     end
