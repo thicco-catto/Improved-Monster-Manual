@@ -17,6 +17,7 @@ local Constants = require("monster_manual_scripts.Constants")
 ---@field Luck integer
 ---@field Flags integer
 ---@field ItemDrops integer
+---@field TearEffects integer
 
 ---@class MonsterManualInfo
 ---@field NumGreenUpgrades integer
@@ -39,11 +40,15 @@ local Constants = require("monster_manual_scripts.Constants")
 ---@field roomCount integer
 ---@field onDrop fun(familiar: EntityFamiliar)
 
+---@class TearEffectData
+---@field tearEffect TearEffects
+---@field onTear fun(familiar: EntityFamiliar, tear: EntityTear, stats: MonsterManualStats)
+---@field onLaser fun(familiar: EntityFamiliar, laser: EntityLaser, stats: MonsterManualStats)
+
 
 ------------------------------------------------
----- DECLARING SAVE MANAGER --------------------
+---- DECLARING PERSISTENT VARIABLES ------------
 ------------------------------------------------
-
 TSIL.SaveManager.AddPersistentVariable(
     ImprovedMonsterManualMod,
     Constants.SaveKeys.PLAYERS_USED_MONSTER_MANUAL,
@@ -69,7 +74,6 @@ TSIL.SaveManager.AddPersistentVariable(
 ------------------------------------------------
 ---- MAIN SCRIPTS ------------------------------
 ------------------------------------------------
-
 require("monster_manual_scripts.Familiar")
 require("monster_manual_scripts.ItemOverride")
 require("monster_manual_scripts.StatsUI")
@@ -85,19 +89,38 @@ require("monster_manual_scripts.ItemDrops.RuneDrop")
 
 
 ------------------------------------------------
+---- TEAR EFFECTS ------------------------------
+------------------------------------------------
+require("monster_manual_scripts.TearEffects.BurningEffect")
+require("monster_manual_scripts.TearEffects.CharmingEffect")
+require("monster_manual_scripts.TearEffects.CriticalEffect")
+require("monster_manual_scripts.TearEffects.FearEffect")
+require("monster_manual_scripts.TearEffects.FreezerEffect")
+require("monster_manual_scripts.TearEffects.HolyLightEffect")
+require("monster_manual_scripts.TearEffects.PoisonEffect")
+
+
+------------------------------------------------
 ---- UPGRADE SCRIPTS ---------------------------
 ------------------------------------------------
 require("monster_manual_scripts.Upgrades.BrainWormUpgrade")
+require("monster_manual_scripts.Upgrades.BurningTearsUpgrade")
+require("monster_manual_scripts.Upgrades.CharmingTearsUpgrade")
+require("monster_manual_scripts.Upgrades.CriticalTearUpgrade")
 require("monster_manual_scripts.Upgrades.CrystalBallUpgrade")
 require("monster_manual_scripts.Upgrades.DamageUpgrade")
 require("monster_manual_scripts.Upgrades.EatFiveBatteriesUpgrade")
+require("monster_manual_scripts.Upgrades.FearTearsUpgrade")
 require("monster_manual_scripts.Upgrades.FireRateUpgrade")
+require("monster_manual_scripts.Upgrades.FreezerTearsUpgrade")
+require("monster_manual_scripts.Upgrades.HolyLightTearsUpgrade")
 require("monster_manual_scripts.Upgrades.HookWormUpgrade")
 require("monster_manual_scripts.Upgrades.KetamineBabyUpgrade")
 require("monster_manual_scripts.Upgrades.KissesUpgrade")
 require("monster_manual_scripts.Upgrades.LazyWormUpgrade")
 require("monster_manual_scripts.Upgrades.LuckUpgrade")
 require("monster_manual_scripts.Upgrades.MonocularUpgrade")
+require("monster_manual_scripts.Upgrades.PoisonTearsUpgrade")
 require("monster_manual_scripts.Upgrades.PulseWormUpgrade")
 require("monster_manual_scripts.Upgrades.RingWormUpgrade")
 require("monster_manual_scripts.Upgrades.ShotSpeedUpgrade")

@@ -46,4 +46,15 @@ Constants.ItemDrops = {
 	RUNE = 1 << 3
 }
 
+---@enum TearEffects
+Constants.TearEffects = {
+	CHARM = 1 << 0,
+	POISON = 1 << 1,
+	BURNING = 1 << 2,
+	FREEZING = 1 << 3,
+	FEAR = 1 << 4,
+	HOLY_LIGHT = 1 << 5,
+	CRITICAL = 1 << 6
+}
+
 return Constants

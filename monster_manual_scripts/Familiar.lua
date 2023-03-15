@@ -1,6 +1,7 @@
 local Familiar = {}
 local Constants = require("monster_manual_scripts.Constants")
 local ItemDrop = require("monster_manual_scripts.ItemDrop")
+local TearEffect = require("monster_manual_scripts.TearEffect")
 
 ---@param player EntityPlayer
 function Familiar:OnFamiliarCache(player)
@@ -110,6 +111,8 @@ function Familiar:OnFamiliarUpdate(familiar)
 
             --Set shot speed
             familiarTear.Velocity = familiarTear.Velocity * familiarStats.ShotSpeed
+
+            TearEffect.TriggerTearEffect(familiar, familiarTear, familiarStats)
         end
     else
         if shootAnimFrames > 0 then

@@ -74,7 +74,8 @@ function ItemOverride:PreMonsterManualUse(_, rng, player)
             Flags = 0,
             ShotSpeed = 1,
             Luck = 0,
-            ItemDrops = 0
+            ItemDrops = 0,
+            TearEffects = 0
         }
 
         ---@type MonsterManualInfo[]
