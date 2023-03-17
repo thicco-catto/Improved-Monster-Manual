@@ -1,7 +1,7 @@
 local FamiliarUpgrade = require("monster_manual_scripts.FamiliarUpgrade")
 
 FamiliarUpgrade.NewRepeatableFamiliarUpgrade(
-    "luck",
+    "luckup",
     function (stats)
         stats.Luck = stats.Luck + 1
     end

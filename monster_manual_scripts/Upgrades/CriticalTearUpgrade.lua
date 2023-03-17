@@ -2,7 +2,7 @@ local FamiliarUpgrade = require("monster_manual_scripts.FamiliarUpgrade")
 local Constants = require("monster_manual_scripts.Constants")
 
 FamiliarUpgrade.NewBlueFamiliarUpgrade(
-    "criticaltears",
+    "crittears",
     function (stats)
         stats.TearEffects = TSIL.Utils.Flags.AddFlags(
             stats.TearEffects,

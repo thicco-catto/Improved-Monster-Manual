@@ -31,7 +31,6 @@ local Constants = require("monster_manual_scripts.Constants")
 
 ---@class UsingMonsterManualData
 ---@field upgrades FamiliarUpgrade[]
----@field sprites Sprite[]
 ---@field currentlySelected integer
 ---@field frameUsed integer
 

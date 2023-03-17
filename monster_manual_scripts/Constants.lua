@@ -32,11 +32,13 @@ Constants.MAX_GREEN_UPGRADES = 5
 Constants.MAX_YELLOW_UPGRADES = 2
 Constants.MAX_BLUE_UPGRADES = 3
 
-Constants.UI_ARROW_SPRITE = Sprite()
-Constants.UI_ARROW_SPRITE:Load("gfx/ui_element.anm2", true)
-Constants.UI_ARROW_SPRITE:ReplaceSpritesheet(0, "gfx/ui/arrow.png")
-Constants.UI_ARROW_SPRITE:LoadGraphics()
-Constants.UI_ARROW_SPRITE:Play("Idle", true)
+local function LoadStatsUISprite()
+	local spr = Sprite()
+	spr:Load("gfx/stat_choosing_ui.anm2", true)
+	return spr
+end
+
+Constants.STATS_UI_SPRITE = LoadStatsUISprite()
 
 ---@enum ItemDrops
 Constants.ItemDrops = {

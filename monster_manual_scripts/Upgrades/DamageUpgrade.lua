@@ -1,7 +1,7 @@
 local FamiliarUpgrade = require("monster_manual_scripts.FamiliarUpgrade")
 
 FamiliarUpgrade.NewRepeatableFamiliarUpgrade(
-    "dmg",
+    "damageup",
     function (stats)
         stats.Damage = stats.Damage + 0.5
     end

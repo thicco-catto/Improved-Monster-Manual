@@ -18,7 +18,7 @@ local BlueFamiliarUpgrades = {}
 local function AddUpgradeToTable(upgrades, sprite, onActivate)
     ---@type FamiliarUpgrade
     local newUpgrade = {
-        sprite = "gfx/ui/upgrades/" .. sprite .. ".png",
+        sprite = sprite,
         onActivate = onActivate
     }
     upgrades[#upgrades+1] = newUpgrade

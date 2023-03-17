@@ -74,20 +74,12 @@ end
 ---@param data UsingMonsterManualData
 local function RenderUpgrades(_, data)
     local yPos = Isaac.GetScreenHeight() / 2
-    local xPos = Isaac.GetScreenWidth() / 2 - 120
+    local xPos = Isaac.GetScreenWidth() / 2
 
-    TSIL.Utils.Tables.ForEach(data.sprites, function(index, sprite)
-        if index == data.currentlySelected then
-            sprite:Play("Selected", true)
-        else
-            sprite:Play("Idle", true)
-        end
+    local anim = "Selected" .. data.currentlySelected
+    Constants.STATS_UI_SPRITE:Play(anim, true)
 
-        local renderPos = Vector(xPos, yPos)
-        sprite:Render(renderPos)
-
-        xPos = xPos + 120
-    end)
+    Constants.STATS_UI_SPRITE:Render(Vector(xPos, yPos))
 end
 
 

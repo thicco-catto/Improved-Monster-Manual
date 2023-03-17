@@ -18,19 +18,19 @@ local function StartUI(player, rng)
 
     local upgrades = FamiliarUpgrade.GetRandomUpgrades(rng, monsterManualInfo)
 
-    local upgradeSprites = TSIL.Utils.Tables.Map(upgrades, function (_, upgrade)
-        local sprite = Sprite()
-        sprite:Load("gfx/ui_element.anm2", false)
-        sprite:ReplaceSpritesheet(0, upgrade.sprite)
-        sprite:LoadGraphics()
-        sprite:Play("Idle", true)
-        return sprite
+    local layer = 2
+    TSIL.Utils.Tables.ForEach(upgrades, function (_, upgrade)
+        Constants.STATS_UI_SPRITE:ReplaceSpritesheet(layer, "gfx/ui/upgrades/" .. upgrade.sprite .. ".png")
+        layer = layer + 1
+        Constants.STATS_UI_SPRITE:ReplaceSpritesheet(layer, "gfx/ui/upgrades/" .. upgrade.sprite .. "_glow.png")
+        layer = layer + 1
     end)
+
+    Constants.STATS_UI_SPRITE:LoadGraphics()
 
     ---@type UsingMonsterManualData
     local usingMonsterManualData = {
         currentlySelected = 2,
-        sprites = upgradeSprites,
         upgrades = upgrades,
         frameUsed = Game():GetFrameCount()
     }
