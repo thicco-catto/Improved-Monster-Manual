@@ -3,6 +3,7 @@ local ItemOverride = {}
 local Constants = require("monster_manual_scripts.Constants")
 local Helpers = require("monster_manual_scripts.Helpers")
 local FamiliarUpgrade = require("monster_manual_scripts.FamiliarUpgrade")
+local BaseFamiliar    = require("monster_manual_scripts.BaseFamiliar")
 
 
 ---@param player EntityPlayer
@@ -68,15 +69,7 @@ function ItemOverride:PreMonsterManualUse(_, rng, player)
             Constants.SaveKeys.PLAYERS_FAMILIAR_STATS
         )
 
-        familiarStatsPerPlayer[tostring(playerIndex)] = {
-            Damage = 2,
-            FireRate = 20,
-            Flags = 0,
-            ShotSpeed = 1,
-            Luck = 0,
-            ItemDrops = 0,
-            TearEffects = 0
-        }
+        familiarStatsPerPlayer[tostring(playerIndex)] = BaseFamiliar.GetBaseStats()
 
         ---@type MonsterManualInfo[]
         local monsterManualInfoPerPlayer = TSIL.SaveManager.GetPersistentVariable(

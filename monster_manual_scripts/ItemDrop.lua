@@ -6,7 +6,7 @@ local itemDrops = {}
 
 ---@param itemDropType ItemDrops
 ---@param roomCount integer
----@param onDrop fun(familiar: EntityFamiliar)
+---@param onDrop fun(familiar: EntityFamiliar, stats: MonsterManualStats)
 function ItemDrop.AddItemDrop(itemDropType, roomCount, onDrop)
     itemDrops[#itemDrops+1] = {
         itemDrop = itemDropType,
@@ -29,7 +29,7 @@ function ItemDrop.TriggerDrops(familiar, familiarStats)
         local targetRoomCount = math.max(1, itemDropData.roomCount - familiarStats.Luck)
 
         if roomClearCount % targetRoomCount == 0 then
-            itemDropData.onDrop(familiar)
+            itemDropData.onDrop(familiar, familiarStats)
         end
     end)
 end

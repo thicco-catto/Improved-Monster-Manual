@@ -31,6 +31,21 @@ ImprovedMonsterManualMod:AddCallback(
 
 ---@param familiar EntityFamiliar
 function Familiar:OnFamiliarInit(familiar)
+    local player = familiar.Player
+    local playerIndex = TSIL.Players.GetPlayerIndex(player)
+
+    local familiarStatsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
+        ImprovedMonsterManualMod,
+        Constants.SaveKeys.PLAYERS_FAMILIAR_STATS
+    )
+
+    ---@type MonsterManualStats
+    local familiarStats = familiarStatsPerPlayer[tostring(playerIndex)]
+
+    local sprite = familiar:GetSprite()
+    sprite:ReplaceSpritesheet(0, "gfx/familiars/" .. familiarStats.Sprite .. ".png")
+    sprite:LoadGraphics()
+
     familiar:AddToFollowers()
 end
 
@@ -89,6 +104,10 @@ function Familiar:OnFamiliarUpdate(familiar)
             shootAnimFrames = 16
 
             local familiarTear = familiar:FireProjectile(TSIL.Direction.DirectionToVector(fireDir))
+
+            if familiarStats.TearVariant ~= TearVariant.BLUE then
+                familiarTear:ChangeVariant(familiarStats.TearVariant)
+            end
 
             --Add flags
             familiarTear:AddTearFlags(familiarStats.Flags)

@@ -45,7 +45,12 @@ Constants.ItemDrops = {
 	BATTERY = 1 << 0,
 	RED_HEART = 1 << 1,
 	PILL = 1 << 2,
-	RUNE = 1 << 3
+	RUNE = 1 << 3,
+	RANDOM_BOMB = 1 << 4,
+	RANDOM_BONE_HEART = 1 << 5,
+	RANDOM_KEY = 1 << 6,
+	RANDOM_CARD = 1 << 7,
+	CURSE = 1 << 8
 }
 
 ---@enum TearEffects
@@ -56,7 +61,8 @@ Constants.TearEffects = {
 	FREEZING = 1 << 3,
 	FEAR = 1 << 4,
 	HOLY_LIGHT = 1 << 5,
-	CRITICAL = 1 << 6
+	CRITICAL = 1 << 6,
+	FRUITCAKE = 1 << 7
 }
 
 return Constants

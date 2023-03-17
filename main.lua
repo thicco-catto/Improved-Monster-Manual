@@ -11,13 +11,15 @@ local Constants = require("monster_manual_scripts.Constants")
 ------------------------------------------------
 
 ---@class MonsterManualStats
+---@field Sprite string
 ---@field Damage number
 ---@field FireRate integer
 ---@field ShotSpeed number
 ---@field Luck integer
----@field Flags integer
+---@field Flags BitSet128
 ---@field ItemDrops integer
 ---@field TearEffects integer
+---@field TearVariant TearVariant
 
 ---@class MonsterManualInfo
 ---@field NumGreenUpgrades integer
@@ -37,7 +39,7 @@ local Constants = require("monster_manual_scripts.Constants")
 ---@class ItemDropData
 ---@field itemDrop ItemDrops
 ---@field roomCount integer
----@field onDrop fun(familiar: EntityFamiliar)
+---@field onDrop fun(familiar: EntityFamiliar, stats: MonsterManualStats)
 
 ---@class TearEffectData
 ---@field tearEffect TearEffects
@@ -79,10 +81,26 @@ require("monster_manual_scripts.StatsUI")
 
 
 ------------------------------------------------
+---- BASE FAMILIARS ----------------------------
+------------------------------------------------
+require("monster_manual_scripts.BaseFamiliars.BookwormFamiliar")
+require("monster_manual_scripts.BaseFamiliars.CrossFamiliar")
+require("monster_manual_scripts.BaseFamiliars.KeeperFamiliar")
+require("monster_manual_scripts.BaseFamiliars.PlanetFamiliar")
+require("monster_manual_scripts.BaseFamiliars.SkeletonFamiliar")
+require("monster_manual_scripts.BaseFamiliars.ThiefFamiliar")
+require("monster_manual_scripts.BaseFamiliars.ZombieFamiliar")
+
+------------------------------------------------
 ---- ITEM DROPS --------------------------------
 ------------------------------------------------
 require("monster_manual_scripts.ItemDrops.BatteriesDrop")
+require("monster_manual_scripts.ItemDrops.CurseDrop")
 require("monster_manual_scripts.ItemDrops.PillDrop")
+require("monster_manual_scripts.ItemDrops.RandomBombDrop")
+require("monster_manual_scripts.ItemDrops.RandomBoneHeart")
+require("monster_manual_scripts.ItemDrops.RandomCardDrop")
+require("monster_manual_scripts.ItemDrops.RandomKeyDrop")
 require("monster_manual_scripts.ItemDrops.RedHeartDrop")
 require("monster_manual_scripts.ItemDrops.RuneDrop")
 
