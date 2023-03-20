@@ -96,6 +96,7 @@ function Familiar:OnFamiliarUpdate(familiar)
     )
     if not shootAnimFrames then shootAnimFrames = 0 end
     local fireDir = player:GetFireDirection()
+    local fireVector = TSIL.Direction.DirectionToVector(fireDir)
     local sprite = familiar:GetSprite()
 
     if familiar.FireCooldown > 0 then
@@ -103,6 +104,32 @@ function Familiar:OnFamiliarUpdate(familiar)
     end
 
     if fireDir ~= Direction.NO_DIRECTION then
+        if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.AIMBOT) then
+            local npcs = TSIL.EntitySpecific.GetNPCs()
+
+            ---@type EntityNPC?
+            local closestEnemy
+            ---@type number
+            local closestEnemyDistance = math.maxinteger
+
+            TSIL.Utils.Tables.ForEach(npcs, function (_, npc)
+                if npc:IsVulnerableEnemy() and npc:IsActiveEnemy(false) and not
+                npc:HasEntityFlags(EntityFlag.FLAG_FRIENDLY | EntityFlag.FLAG_FRIENDLY_BALL) then
+                    local distance = npc.Position:DistanceSquared(familiar.Position)
+
+                    if distance <= closestEnemyDistance then
+                        closestEnemyDistance = distance
+                        closestEnemy = npc
+                    end
+                end
+            end)
+
+            if closestEnemy then
+                fireVector = (closestEnemy.Position - familiar.Position):Normalized()
+                fireDir = TSIL.Direction.AngleToDirection(fireVector:GetAngleDegrees())
+            end
+        end
+
         if familiar.FireCooldown > 0 then
             if shootAnimFrames > 0 then
                 shootAnimFrames = shootAnimFrames - 1
@@ -121,7 +148,7 @@ function Familiar:OnFamiliarUpdate(familiar)
             sprite:SetAnimation(Constants.SHOOT_ANIM_PER_DIRECTION[fireDir], false)
             shootAnimFrames = 16
 
-            local familiarTear = familiar:FireProjectile(TSIL.Direction.DirectionToVector(fireDir))
+            local familiarTear = familiar:FireProjectile(fireVector)
 
             if familiarStats.TearVariant ~= TearVariant.BLUE then
                 familiarTear:ChangeVariant(familiarStats.TearVariant)

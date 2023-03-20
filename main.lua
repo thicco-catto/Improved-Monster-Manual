@@ -121,6 +121,7 @@ require("monster_manual_scripts.TearEffects.PoisonEffect")
 ------------------------------------------------
 ---- UPGRADE SCRIPTS ---------------------------
 ------------------------------------------------
+require("monster_manual_scripts.Upgrades.AimbotUpgrade")
 require("monster_manual_scripts.Upgrades.BrainWormUpgrade")
 require("monster_manual_scripts.Upgrades.BurningTearsUpgrade")
 require("monster_manual_scripts.Upgrades.CharmingTearsUpgrade")
