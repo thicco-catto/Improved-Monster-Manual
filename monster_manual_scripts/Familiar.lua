@@ -71,6 +71,50 @@ ImprovedMonsterManualMod:AddCallback(
 
 
 ---@param familiar EntityFamiliar
+---@param familiarStats MonsterManualStats
+---@param direction Vector
+---@param positionOffset Vector?
+local function ShootFamiliarTear(familiar, familiarStats, direction, positionOffset)
+    local player = familiar.Player
+    local familiarTear = familiar:FireProjectile(direction)
+
+    if positionOffset then
+        familiarTear.Position = familiarTear.Position + positionOffset
+    end
+
+    if familiarStats.TearVariant ~= TearVariant.BLUE then
+        familiarTear:ChangeVariant(familiarStats.TearVariant)
+    end
+
+    --Add flags
+    familiarTear:AddTearFlags(familiarStats.Flags)
+
+    --Set color (make them purple if they have baby bender)
+    if player:HasTrinket(TrinketType.TRINKET_BABY_BENDER) then
+        familiarTear.Color = Constants.PURPLE_TEAR_COLOR
+    end
+
+    --Set damage (double it if bff)
+    familiarTear.CollisionDamage = familiarStats.Damage
+    if player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) then
+        familiarTear.CollisionDamage = familiarTear.CollisionDamage * 2
+    end
+
+    --Set tear scale
+    if player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) then
+        familiarTear.Scale = familiarTear.Scale + 0.3
+    end
+
+    --Set shot speed
+    familiarTear.Velocity = familiarTear.Velocity * familiarStats.ShotSpeed
+
+    TearEffect.TriggerTearEffect(familiar, familiarTear, familiarStats)
+
+    familiarTear:Update()
+end
+
+
+---@param familiar EntityFamiliar
 function Familiar:OnFamiliarUpdate(familiar)
     familiar:FollowParent()
 
@@ -143,40 +187,31 @@ function Familiar:OnFamiliarUpdate(familiar)
                 familiar.FireCooldown = math.max(1, math.ceil(familiar.FireCooldown / 2))
             end
 
-            --If OnShoot returns true, ignore the default shooting logic
-            --If it returns false, player the animation but ignore the shooting
             sprite:SetAnimation(Constants.SHOOT_ANIM_PER_DIRECTION[fireDir], false)
             shootAnimFrames = 16
 
-            local familiarTear = familiar:FireProjectile(fireVector)
+            if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.TRIPLE_SHOT) then
+                fireVector = fireVector:Rotated(-15)
+                for _ = 1, 3, 1 do
+                    ShootFamiliarTear(familiar, familiarStats, fireVector)
+                    fireVector = fireVector:Rotated(15)
+                end
+            elseif TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.BOOKWORM) then
+                local rng = familiar:GetDropRNG()
 
-            if familiarStats.TearVariant ~= TearVariant.BLUE then
-                familiarTear:ChangeVariant(familiarStats.TearVariant)
+                local baseChance = 25 + familiarStats.Luck * 5
+                if rng:RandomInt(100) < baseChance then
+                    local offset1 = fireVector:Rotated(90):Resized(10)
+                    local offset2 = fireVector:Rotated(-90):Resized(10)
+
+                    ShootFamiliarTear(familiar, familiarStats, fireVector, offset1)
+                    ShootFamiliarTear(familiar, familiarStats, fireVector, offset2)
+                else
+                    ShootFamiliarTear(familiar, familiarStats, fireVector)
+                end
+            else
+                ShootFamiliarTear(familiar, familiarStats, fireVector)
             end
-
-            --Add flags
-            familiarTear:AddTearFlags(familiarStats.Flags)
-
-            --Set color (make them purple if they have baby bender)
-            if player:HasTrinket(TrinketType.TRINKET_BABY_BENDER) then
-                familiarTear.Color = Constants.PURPLE_TEAR_COLOR
-            end
-
-            --Set damage (double it if bff)
-            familiarTear.CollisionDamage = familiarStats.Damage
-            if player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) then
-                familiarTear.CollisionDamage = familiarTear.CollisionDamage * 2
-            end
-
-            --Set tear scale
-            if player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) then
-                familiarTear.Scale = familiarTear.Scale + 0.3
-            end
-
-            --Set shot speed
-            familiarTear.Velocity = familiarTear.Velocity * familiarStats.ShotSpeed
-
-            TearEffect.TriggerTearEffect(familiar, familiarTear, familiarStats)
         end
     else
         if shootAnimFrames > 0 then
