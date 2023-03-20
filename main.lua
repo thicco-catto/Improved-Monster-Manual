@@ -15,12 +15,15 @@ local Constants = require("monster_manual_scripts.Constants")
 ---@field Damage number
 ---@field FireRate integer
 ---@field ShotSpeed number
+---@field FallingSpeed number
+---@field FallingAccel number
 ---@field Luck integer
 ---@field Flags BitSet128
 ---@field ItemDrops integer
 ---@field TearEffects integer
 ---@field TearVariant TearVariant
 ---@field SpecialEffects integer
+---@field TearColor Color
 
 ---@class MonsterManualInfo
 ---@field NumGreenUpgrades integer
@@ -122,6 +125,7 @@ require("monster_manual_scripts.TearEffects.PoisonEffect")
 ---- UPGRADE SCRIPTS ---------------------------
 ------------------------------------------------
 require("monster_manual_scripts.Upgrades.AimbotUpgrade")
+require("monster_manual_scripts.Upgrades.BobWasHereUpgrade")
 require("monster_manual_scripts.Upgrades.BrainWormUpgrade")
 require("monster_manual_scripts.Upgrades.BurningTearsUpgrade")
 require("monster_manual_scripts.Upgrades.CharmingTearsUpgrade")

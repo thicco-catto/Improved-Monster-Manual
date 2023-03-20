@@ -35,7 +35,6 @@ function Familiar:OnFamiliarCache(player)
         player:GetCollectibleRNG(CollectibleType.COLLECTIBLE_MONSTER_MANUAL)
     )
 end
-
 ImprovedMonsterManualMod:AddCallback(
     ModCallbacks.MC_EVALUATE_CACHE,
     Familiar.OnFamiliarCache,
@@ -62,7 +61,6 @@ function Familiar:OnFamiliarInit(familiar)
 
     familiar:AddToFollowers()
 end
-
 ImprovedMonsterManualMod:AddCallback(
     ModCallbacks.MC_FAMILIAR_INIT,
     Familiar.OnFamiliarInit,
@@ -94,6 +92,12 @@ local function ShootFamiliarTear(familiar, familiarStats, direction, positionOff
         familiarTear.Color = Constants.PURPLE_TEAR_COLOR
     end
 
+    if familiarStats.TearColor.R ~= 0 and
+    familiarStats.TearColor.G ~= 0 and
+    familiarStats.TearColor.B ~= 0 then
+        familiarTear.Color = familiarStats.TearColor
+    end
+
     --Set damage (double it if bff)
     familiarTear.CollisionDamage = familiarStats.Damage
     if player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) then
@@ -107,6 +111,10 @@ local function ShootFamiliarTear(familiar, familiarStats, direction, positionOff
 
     --Set shot speed
     familiarTear.Velocity = familiarTear.Velocity * familiarStats.ShotSpeed
+
+    --Set range
+    familiarTear.FallingSpeed = familiarTear.FallingSpeed + familiarStats.FallingSpeed
+    familiarTear.FallingAcceleration = familiarTear.FallingAcceleration + familiarStats.FallingAccel
 
     TearEffect.TriggerTearEffect(familiar, familiarTear, familiarStats)
 

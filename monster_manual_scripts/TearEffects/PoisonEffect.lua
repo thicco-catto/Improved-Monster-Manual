@@ -10,9 +10,10 @@ TearEffect.AddTearEffect(
         local baseChance = 25 + stats.Luck * 5
         if rng:RandomInt(100) < baseChance then
             tear:AddTearFlags(TearFlags.TEAR_POISON)
+            tear.Color = Color(0.5, 0.9, 0.4)
         end
     end,
     function (familiar, laser, stats)
-        print("lol")
+        laser:AddTearFlags(TearFlags.TEAR_POISON)
     end
 )

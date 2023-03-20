@@ -13,7 +13,9 @@ local skeletonStats = {
     ShotSpeed = 1,
     TearEffects = 0,
     TearVariant = TearVariant.BONE,
-    SpecialEffects = 0
+    SpecialEffects = 0,
+    FallingAccel = 0,
+    FallingSpeed = 0
 }
 
 

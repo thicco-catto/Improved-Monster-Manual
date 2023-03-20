@@ -7,13 +7,15 @@ BaseFamiliar.AddBaseFamiliar(
     {
         Sprite = "keeper_baby",
         Damage = 1,
-        FireRate = 20,
+        FireRate = 30,
         Flags = TearFlags.TEAR_COIN_DROP_DEATH,
         ItemDrops = 0,
         Luck = 0,
         ShotSpeed = 1,
         TearEffects = 0,
         TearVariant = TearVariant.BLUE,
-        SpecialEffects = Constants.SpecialEffects.TRIPLE_SHOT
+        SpecialEffects = Constants.SpecialEffects.TRIPLE_SHOT,
+        FallingAccel = 0,
+        FallingSpeed = 0
     }
 )

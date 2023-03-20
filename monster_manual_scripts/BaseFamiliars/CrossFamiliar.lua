@@ -13,6 +13,8 @@ BaseFamiliar.AddBaseFamiliar(
         ShotSpeed = 1,
         TearEffects = 0,
         TearVariant = TearVariant.BLUE,
-        SpecialEffects = 0
+        SpecialEffects = 0,
+        FallingAccel = 0,
+        FallingSpeed = 0
     }
 )
