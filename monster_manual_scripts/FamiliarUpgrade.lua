@@ -14,7 +14,7 @@ local BlueFamiliarUpgrades = {}
 
 ---@param upgrades FamiliarUpgrade[]
 ---@param sprite string
----@param onActivate fun(stats: MonsterManualStats)
+---@param onActivate fun(familiar: EntityFamiliar, stats: MonsterManualStats)
 local function AddUpgradeToTable(upgrades, sprite, onActivate)
     ---@type FamiliarUpgrade
     local newUpgrade = {
@@ -26,21 +26,21 @@ end
 
 
 ---@param sprite string
----@param onActivate fun(stats: MonsterManualStats)
+---@param onActivate fun(familiar: EntityFamiliar, stats: MonsterManualStats)
 function FamiliarUpgrade.NewYellowFamiliarUpgrade(sprite, onActivate)
     AddUpgradeToTable(YellowFamiliarUpgrades, sprite, onActivate)
 end
 
 
 ---@param sprite string
----@param onActivate fun(stats: MonsterManualStats)
+---@param onActivate fun(familiar: EntityFamiliar, stats: MonsterManualStats)
 function FamiliarUpgrade.NewBlueFamiliarUpgrade(sprite, onActivate)
     AddUpgradeToTable(BlueFamiliarUpgrades, sprite, onActivate)
 end
 
 
 ---@param sprite string
----@param onActivate fun(stats: MonsterManualStats)
+---@param onActivate fun(familiar: EntityFamiliar, stats: MonsterManualStats)
 function FamiliarUpgrade.NewRepeatableFamiliarUpgrade(sprite, onActivate)
     AddUpgradeToTable(RepeatableFamiliarUpgrades, sprite, onActivate)
 end

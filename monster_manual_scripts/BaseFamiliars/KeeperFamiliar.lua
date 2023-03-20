@@ -1,4 +1,5 @@
 local BaseFamiliar = require("monster_manual_scripts.BaseFamiliar")
+local Constants    = require("monster_manual_scripts.Constants")
 
 
 BaseFamiliar.AddBaseFamiliar(
@@ -12,6 +13,7 @@ BaseFamiliar.AddBaseFamiliar(
         Luck = 0,
         ShotSpeed = 1,
         TearEffects = 0,
-        TearVariant = TearVariant.BLUE
+        TearVariant = TearVariant.BLUE,
+        SpecialEffects = Constants.SpecialEffects.TRIPLE_SHOT
     }
 )

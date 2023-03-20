@@ -65,4 +65,15 @@ Constants.TearEffects = {
 	FRUITCAKE = 1 << 7
 }
 
+---@enum SpecialEffects
+Constants.SpecialEffects = {
+	TWINS = 1 << 0,
+	BOOKWORM = 1 << 1,
+	TRIPLE_SHOT = 1 << 2,
+	BRIMSTONE = 1 << 3,
+	INFESTED = 1 << 4,
+	DRIED = 1 << 5,
+	AIMBOT = 1 << 6
+}
+
 return Constants

@@ -13,6 +13,7 @@ BaseFamiliar.AddBaseFamiliar(
         Luck = 0,
         ShotSpeed = 1,
         TearEffects = 0,
-        TearVariant = TearVariant.EYE
+        TearVariant = TearVariant.EYE,
+        SpecialEffects = 0
     }
 )

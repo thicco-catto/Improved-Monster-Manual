@@ -21,9 +21,15 @@ local function CheckPlayerChoosing(player, data)
         ---@type MonsterManualStats
         local familiarStats = familiarStatsPerPlayer[tostring(playerIndex)]
 
+        local playerFamiliars = TSIL.Familiars.GetPlayerFamiliars(player)
+
+        local monsterManualFamiliars = TSIL.Utils.Tables.FindFirst(playerFamiliars, function (_, familiar)
+            return familiar.Variant == Constants.FamiliarVariant.MONSTER_MANUAL_FAMILIAR
+        end)
+
         local upgrade = data.upgrades[data.currentlySelected]
 
-        upgrade.onActivate(familiarStats)
+        upgrade.onActivate(monsterManualFamiliars, familiarStats)
 
         ---@type MonsterManualInfo[]
         local monsterManualInfoPerPlayer = TSIL.SaveManager.GetPersistentVariable(

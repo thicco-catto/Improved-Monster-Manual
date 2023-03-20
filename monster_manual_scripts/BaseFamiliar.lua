@@ -33,7 +33,8 @@ function BaseFamiliar.GetBaseStats()
             Luck = 0,
             ShotSpeed = 1,
             TearEffects = Constants.TearEffects.FRUITCAKE,
-            TearVariant = TearVariant.BLUE
+            TearVariant = TearVariant.BLUE,
+            SpecialEffects = 0
         }
         return stats
     end

@@ -20,6 +20,7 @@ local Constants = require("monster_manual_scripts.Constants")
 ---@field ItemDrops integer
 ---@field TearEffects integer
 ---@field TearVariant TearVariant
+---@field SpecialEffects integer
 
 ---@class MonsterManualInfo
 ---@field NumGreenUpgrades integer
@@ -29,7 +30,7 @@ local Constants = require("monster_manual_scripts.Constants")
 
 ---@class FamiliarUpgrade
 ---@field sprite string
----@field onActivate fun(stats: MonsterManualStats)
+---@field onActivate fun(familiar: EntityFamiliar, stats: MonsterManualStats)
 
 ---@class UsingMonsterManualData
 ---@field upgrades FamiliarUpgrade[]
@@ -142,4 +143,5 @@ require("monster_manual_scripts.Upgrades.PulseWormUpgrade")
 require("monster_manual_scripts.Upgrades.RingWormUpgrade")
 require("monster_manual_scripts.Upgrades.ShotSpeedUpgrade")
 require("monster_manual_scripts.Upgrades.SoyBeansUpgrade")
+require("monster_manual_scripts.Upgrades.TwinsUpgrade")
 require("monster_manual_scripts.Upgrades.WiggleWormUpgrade")

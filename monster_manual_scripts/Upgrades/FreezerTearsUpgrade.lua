@@ -3,7 +3,7 @@ local Constants = require("monster_manual_scripts.Constants")
 
 FamiliarUpgrade.NewYellowFamiliarUpgrade(
     "icetears",
-    function (stats)
+    function (_, stats)
         stats.TearEffects = TSIL.Utils.Flags.AddFlags(
             stats.TearEffects,
             Constants.TearEffects.FREEZING

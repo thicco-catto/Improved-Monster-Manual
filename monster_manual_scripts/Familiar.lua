@@ -15,9 +15,23 @@ function Familiar:OnFamiliarCache(player)
 
     if not hasUsedMonsterManual then return end
 
+    local familiarStatsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
+        ImprovedMonsterManualMod,
+        Constants.SaveKeys.PLAYERS_FAMILIAR_STATS
+    )
+
+    ---@type MonsterManualStats
+    local familiarStats = familiarStatsPerPlayer[tostring(playerIndex)]
+
+    local numFamiliars = 1
+
+    if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.TWINS) then
+        numFamiliars = 2
+    end
+
     player:CheckFamiliar(
         Constants.FamiliarVariant.MONSTER_MANUAL_FAMILIAR,
-        1,
+        numFamiliars,
         player:GetCollectibleRNG(CollectibleType.COLLECTIBLE_MONSTER_MANUAL)
     )
 end
@@ -70,6 +84,10 @@ function Familiar:OnFamiliarUpdate(familiar)
 
     ---@type MonsterManualStats
     local familiarStats = familiarStatsPerPlayer[tostring(playerIndex)]
+
+    if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.TWINS) then
+        familiar.SpriteScale = familiar.SpriteScale * 0.75
+    end
 
     local shootAnimFrames = TSIL.Entities.GetEntityData(
         ImprovedMonsterManualMod,
