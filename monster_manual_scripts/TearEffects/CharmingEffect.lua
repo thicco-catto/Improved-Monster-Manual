@@ -4,16 +4,14 @@ local Constants = require("monster_manual_scripts.Constants")
 
 TearEffect.AddTearEffect(
     Constants.TearEffects.CHARM,
-    function (_, tear, stats)
-        local rng = TSIL.RNG.NewRNG(tear.InitSeed)
-
+    function (_, tear, stats, rng)
         local baseChance = 25 + stats.Luck * 5
         if rng:RandomInt(100) < baseChance then
             tear:AddTearFlags(TearFlags.TEAR_CHARM)
             tear.Color = Color(1, 0, 1, 1, 0.2)
         end
     end,
-    function (familiar, laser, stats)
+    function (familiar, laser, stats, rng)
         laser:AddTearFlags(TearFlags.TEAR_CHARM)
     end
 )

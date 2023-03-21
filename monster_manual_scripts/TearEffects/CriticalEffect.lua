@@ -10,6 +10,7 @@ TearEffect.AddTearEffect(
         local baseChance = 25 + stats.Luck * 5
         if rng:RandomInt(100) < baseChance then
             tear.CollisionDamage = tear.CollisionDamage * 2
+            tear.Color = Color(0.9, 0.2, 0.2)
         end
     end,
     function (familiar, laser, stats)

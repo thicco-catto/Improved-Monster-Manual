@@ -15,6 +15,7 @@ BaseFamiliar.AddBaseFamiliar(
         TearVariant = TearVariant.ROCK,
         SpecialEffects = 0,
         FallingAccel = -0.03,
-        FallingSpeed = -3
+        FallingSpeed = -3,
+        TearColor = Color(0, 0, 0)
     }
 )

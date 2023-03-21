@@ -16,6 +16,7 @@ BaseFamiliar.AddBaseFamiliar(
         TearVariant = TearVariant.BLUE,
         SpecialEffects = Constants.SpecialEffects.BOOKWORM,
         FallingAccel = 0,
-        FallingSpeed = 0
+        FallingSpeed = 0,
+        TearColor = Color(0, 0, 0)
     }
 )

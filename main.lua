@@ -47,8 +47,8 @@ local Constants = require("monster_manual_scripts.Constants")
 
 ---@class TearEffectData
 ---@field tearEffect TearEffects
----@field onTear fun(familiar: EntityFamiliar, tear: EntityTear, stats: MonsterManualStats)
----@field onLaser fun(familiar: EntityFamiliar, laser: EntityLaser, stats: MonsterManualStats)
+---@field onTear fun(familiar: EntityFamiliar, tear: EntityTear, stats: MonsterManualStats, rng: RNG)
+---@field onLaser fun(familiar: EntityFamiliar, laser: EntityLaser, stats: MonsterManualStats, rng: RNG)
 
 
 ------------------------------------------------

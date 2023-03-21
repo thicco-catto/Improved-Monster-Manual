@@ -116,7 +116,8 @@ local function ShootFamiliarTear(familiar, familiarStats, direction, positionOff
     familiarTear.FallingSpeed = familiarTear.FallingSpeed + familiarStats.FallingSpeed
     familiarTear.FallingAcceleration = familiarTear.FallingAcceleration + familiarStats.FallingAccel
 
-    TearEffect.TriggerTearEffect(familiar, familiarTear, familiarStats)
+    local rng = TSIL.RNG.NewRNG(familiarTear.InitSeed)
+    TearEffect.TriggerTearEffect(familiar, familiarTear, familiarStats, rng)
 
     familiarTear:Update()
 end
