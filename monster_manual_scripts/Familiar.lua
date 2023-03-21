@@ -267,3 +267,40 @@ ImprovedMonsterManualMod:AddCallback(
     ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD,
     Familiar.OnRoomClear
 )
+
+
+---@param familiar EntityFamiliar
+---@param entity Entity
+function Familiar:OnFamiliarCollision(familiar, entity)
+    local projectile = entity:ToProjectile()
+    if not projectile then return end
+    if projectile:HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then return end
+
+    local player = familiar.Player
+    local playerIndex = TSIL.Players.GetPlayerIndex(player)
+
+    local familiarStatsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
+        ImprovedMonsterManualMod,
+        Constants.SaveKeys.PLAYERS_FAMILIAR_STATS
+    )
+
+    ---@type MonsterManualStats
+    local familiarStats = familiarStatsPerPlayer[tostring(playerIndex)]
+
+    if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.DRIED) then
+        local rng = familiar:GetDropRNG()
+
+        local baseChance = 10 + familiarStats.Luck * 5
+        if rng:RandomInt(100) < baseChance then
+            projectile.Velocity = projectile.Velocity:Rotated(180)
+            projectile:AddProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER | ProjectileFlags.HIT_ENEMIES)
+        else
+            projectile:Kill()
+        end
+    end
+end
+ImprovedMonsterManualMod:AddCallback(
+    ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
+    Familiar.OnFamiliarCollision,
+    Constants.FamiliarVariant.MONSTER_MANUAL_FAMILIAR
+)
