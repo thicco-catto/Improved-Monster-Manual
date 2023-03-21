@@ -123,6 +123,39 @@ local function ShootFamiliarTear(familiar, familiarStats, direction, positionOff
 end
 
 
+---@param player EntityPlayer
+---@param familiar EntityFamiliar
+---@param familiarStats MonsterManualStats
+local function OnInfestedFamiliarUpdate(player, familiar, familiarStats)
+    local currentFrame = Game():GetFrameCount()
+    local room = Game():GetRoom()
+
+    if currentFrame % 4 == 0 then
+        TSIL.EntitySpecific.SpawnEffect(
+            EffectVariant.PLAYER_CREEP_WHITE,
+            0,
+            familiar.Position,
+            Vector.Zero,
+            familiar
+        )
+    end
+
+    if currentFrame % 10 == 0 and not room:IsClear() then
+        local rng = familiar:GetDropRNG()
+
+        local baseChance = 10 + familiarStats.Luck * 5
+        if rng:RandomInt(100) < baseChance then
+            local angle = rng:RandomInt(360)
+            local length = TSIL.Random.GetRandomFloat(20, 70, rng)
+
+            local target = familiar.Position + Vector.FromAngle(angle):Resized(length)
+
+            player:ThrowBlueSpider(familiar.Position, target)
+        end
+    end
+end
+
+
 ---@param familiar EntityFamiliar
 function Familiar:OnFamiliarUpdate(familiar)
     familiar:FollowParent()
@@ -140,6 +173,10 @@ function Familiar:OnFamiliarUpdate(familiar)
 
     if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.TWINS) then
         familiar.SpriteScale = familiar.SpriteScale * 0.75
+    end
+
+    if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.INFESTED) then
+        OnInfestedFamiliarUpdate(player, familiar, familiarStats)
     end
 
     local shootAnimFrames = TSIL.Entities.GetEntityData(

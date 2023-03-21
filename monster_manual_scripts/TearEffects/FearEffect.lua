@@ -8,6 +8,7 @@ TearEffect.AddTearEffect(
         local baseChance = 25 + stats.Luck * 5
         if rng:RandomInt(100) < baseChance then
             tear:AddTearFlags(TearFlags.TEAR_FEAR)
+            tear:ChangeVariant(TearVariant.DARK_MATTER)
         end
     end,
     function (familiar, laser, stats)
