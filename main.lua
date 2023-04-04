@@ -119,6 +119,7 @@ require("monster_manual_scripts.TearEffects.FearEffect")
 require("monster_manual_scripts.TearEffects.FreezerEffect")
 require("monster_manual_scripts.TearEffects.HolyLightEffect")
 require("monster_manual_scripts.TearEffects.PoisonEffect")
+require("monster_manual_scripts.TearEffects.TechnologyEffect")
 
 
 ------------------------------------------------
@@ -150,5 +151,6 @@ require("monster_manual_scripts.Upgrades.PulseWormUpgrade")
 require("monster_manual_scripts.Upgrades.RingWormUpgrade")
 require("monster_manual_scripts.Upgrades.ShotSpeedUpgrade")
 require("monster_manual_scripts.Upgrades.SoyBeansUpgrade")
+require("monster_manual_scripts.Upgrades.TechnologyUpgrade")
 require("monster_manual_scripts.Upgrades.TwinsUpgrade")
 require("monster_manual_scripts.Upgrades.WiggleWormUpgrade")

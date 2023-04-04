@@ -62,7 +62,8 @@ Constants.TearEffects = {
 	FEAR = 1 << 4,
 	HOLY_LIGHT = 1 << 5,
 	CRITICAL = 1 << 6,
-	FRUITCAKE = 1 << 7
+	FRUITCAKE = 1 << 7,
+	TECHNOLOGY = 1 << 8
 }
 
 ---@enum SpecialEffects
