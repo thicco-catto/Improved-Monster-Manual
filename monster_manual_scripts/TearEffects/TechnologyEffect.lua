@@ -70,19 +70,17 @@ local function ShootTechLaser(tear)
     local familiarStats = familiarStatsPerPlayer[tostring(playerIndex)]
 
     local rng = TSIL.RNG.NewRNG(tear.InitSeed)
-    local shootDir = Vector(1, 0)
-    shootDir = shootDir:Rotated(TSIL.Random.GetRandomInt(0, 360, rng))
+    local shootAngle = TSIL.Random.GetRandomInt(0, 360, rng)
 
-    local laser = player:FireTechLaser(
+    local laser = EntityLaser.ShootAngle(
+        LaserVariant.THIN_RED,
         tear.Position + Vector(0, tear.Height),
-        ---@diagnostic disable-next-line: param-type-mismatch
-        -1,
-        shootDir,
-        false,
-        false,
-        familiar,
-        1/player.Damage * familiarStats.Damage
+        shootAngle,
+        5,
+        Vector.Zero,
+        nil
     )
+    laser.CollisionDamage = familiarStats.Damage
 
     local room = Game():GetRoom()
     if room:HasWater() then
@@ -91,6 +89,8 @@ local function ShootTechLaser(tear)
         laser.MaxDistance = TSIL.Random.GetRandomInt(70, 130, rng)
     end
 
+    laser:Update()
+    laser.SpriteScale = Vector(0.6, 0.7)
 end
 
 

@@ -65,11 +65,13 @@ local function CheckPlayerMovingArrow(player, data)
     local controller = player.ControllerIndex
 
     if Input.IsActionTriggered(ButtonAction.ACTION_RIGHT, controller) or
-        Input.IsActionTriggered(ButtonAction.ACTION_SHOOTRIGHT, controller) then
+    Input.IsActionTriggered(ButtonAction.ACTION_SHOOTRIGHT, controller) then
+        SFXManager():Play(SoundEffect.SOUND_MENU_SCROLL)
         data.currentlySelected = data.currentlySelected + 1
         if data.currentlySelected > 3 then data.currentlySelected = 1 end
     elseif Input.IsActionTriggered(ButtonAction.ACTION_LEFT, controller) or
-        Input.IsActionTriggered(ButtonAction.ACTION_SHOOTLEFT, controller) then
+    Input.IsActionTriggered(ButtonAction.ACTION_SHOOTLEFT, controller) then
+        SFXManager():Play(SoundEffect.SOUND_MENU_SCROLL)
         data.currentlySelected = data.currentlySelected - 1
         if data.currentlySelected < 1 then data.currentlySelected = 3 end
     end
