@@ -11,7 +11,10 @@ TearEffect.AddTearEffect(
             tear.Color = Color(1, 0, 1, 1, 0.2)
         end
     end,
-    function (familiar, laser, stats, rng)
-        laser:AddTearFlags(TearFlags.TEAR_CHARM)
+    function (_, laser, stats, rng)
+        local baseChance = 25 + stats.Luck * 5
+        if rng:RandomInt(100) < baseChance then
+            laser:AddTearFlags(TearFlags.TEAR_CHARM)
+        end
     end
 )

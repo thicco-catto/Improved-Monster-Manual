@@ -11,7 +11,7 @@ TearEffect.AddTearEffect(
             tear:ChangeVariant(TearVariant.DARK_MATTER)
         end
     end,
-    function (familiar, laser, stats)
-        print("lol")
+    function (_, laser)
+        laser:AddTearFlags(TearFlags.TEAR_FEAR)
     end
 )

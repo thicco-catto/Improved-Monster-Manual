@@ -41,8 +41,6 @@ local function StartUI(player, rng)
         "UsingMonsterManualData",
         usingMonsterManualData
     )
-
-    player.ControlsEnabled = false
 end
 
 
@@ -57,6 +55,8 @@ function ItemOverride:PreMonsterManualUse(_, rng, player)
     local hasUsedMonsterManual = playersUsedMonsterManual[tostring(playerIndex)]
 
     if hasUsedMonsterManual then
+        TSIL.Pause.Pause()
+
         player:AnimateCollectible(CollectibleType.COLLECTIBLE_MONSTER_MANUAL, "LiftItem", "PlayerPickup")
 
         StartUI(player, rng)

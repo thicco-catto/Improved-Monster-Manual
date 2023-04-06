@@ -103,8 +103,6 @@ local function OnPlayerRender(player)
     local frameDiff = currentFrame - data.frameUsed
 
     if frameDiff > 10 and CheckPlayerChoosing(player, data) then
-        player.ControlsEnabled = true
-
         player:AnimateCollectible(CollectibleType.COLLECTIBLE_MONSTER_MANUAL, "HideItem", "PlayerPickup")
 
         Helpers.SetTemporaryPlayerData(
@@ -112,6 +110,8 @@ local function OnPlayerRender(player)
             "UsingMonsterManualData",
             nil
         )
+
+        TSIL.Pause.Unpause()
 
         return
     end

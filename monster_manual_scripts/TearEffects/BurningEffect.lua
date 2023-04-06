@@ -10,7 +10,10 @@ TearEffect.AddTearEffect(
             tear:AddTearFlags(TearFlags.TEAR_BURN)
         end
     end,
-    function (familiar, laser, stats, rng)
-        print("lol")
+    function (_, laser, stats, rng)
+        local baseChance = 25 + stats.Luck * 5
+        if rng:RandomInt(100) < baseChance then
+            laser:AddTearFlags(TearFlags.TEAR_BURN)
+        end
     end
 )

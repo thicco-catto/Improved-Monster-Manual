@@ -2,6 +2,7 @@ local Familiar = {}
 local Constants = require("monster_manual_scripts.Constants")
 local ItemDrop = require("monster_manual_scripts.ItemDrop")
 local TearEffect = require("monster_manual_scripts.TearEffect")
+local ChargeBar = require("monster_manual_scripts.ChargeBar")
 
 ---@param player EntityPlayer
 function Familiar:OnFamiliarCache(player)
@@ -157,28 +158,35 @@ end
 
 
 ---@param familiar EntityFamiliar
-function Familiar:OnFamiliarUpdate(familiar)
-    familiar:FollowParent()
+---@return EntityNPC?
+local function GetClosestEnemy(familiar)
+    local npcs = TSIL.EntitySpecific.GetNPCs()
 
-    local player = familiar.Player
-    local playerIndex = TSIL.Players.GetPlayerIndex(player)
+    ---@type EntityNPC?
+    local closestEnemy
+    ---@type number
+    local closestEnemyDistance = math.maxinteger
 
-    local familiarStatsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
-        ImprovedMonsterManualMod,
-        Constants.SaveKeys.PLAYERS_FAMILIAR_STATS
-    )
+    TSIL.Utils.Tables.ForEach(npcs, function (_, npc)
+        if npc:IsVulnerableEnemy() and npc:IsActiveEnemy(false) and not
+        npc:HasEntityFlags(EntityFlag.FLAG_FRIENDLY | EntityFlag.FLAG_FRIENDLY_BALL) then
+            local distance = npc.Position:DistanceSquared(familiar.Position)
 
-    ---@type MonsterManualStats
-    local familiarStats = familiarStatsPerPlayer[tostring(playerIndex)]
+            if distance <= closestEnemyDistance then
+                closestEnemyDistance = distance
+                closestEnemy = npc
+            end
+        end
+    end)
 
-    if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.TWINS) then
-        familiar.SpriteScale = familiar.SpriteScale * 0.75
-    end
+    return closestEnemy
+end
 
-    if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.INFESTED) then
-        OnInfestedFamiliarUpdate(player, familiar, familiarStats)
-    end
 
+---@param familiar EntityFamiliar
+---@param player EntityPlayer
+---@param familiarStats MonsterManualStats
+local function UpdateShootingFamiliar(familiar, player, familiarStats)
     local shootAnimFrames = TSIL.Entities.GetEntityData(
         ImprovedMonsterManualMod,
         familiar,
@@ -195,24 +203,7 @@ function Familiar:OnFamiliarUpdate(familiar)
 
     if fireDir ~= Direction.NO_DIRECTION then
         if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.AIMBOT) then
-            local npcs = TSIL.EntitySpecific.GetNPCs()
-
-            ---@type EntityNPC?
-            local closestEnemy
-            ---@type number
-            local closestEnemyDistance = math.maxinteger
-
-            TSIL.Utils.Tables.ForEach(npcs, function (_, npc)
-                if npc:IsVulnerableEnemy() and npc:IsActiveEnemy(false) and not
-                npc:HasEntityFlags(EntityFlag.FLAG_FRIENDLY | EntityFlag.FLAG_FRIENDLY_BALL) then
-                    local distance = npc.Position:DistanceSquared(familiar.Position)
-
-                    if distance <= closestEnemyDistance then
-                        closestEnemyDistance = distance
-                        closestEnemy = npc
-                    end
-                end
-            end)
+            local closestEnemy = GetClosestEnemy(familiar)
 
             if closestEnemy then
                 fireVector = (closestEnemy.Position - familiar.Position):Normalized()
@@ -273,6 +264,195 @@ function Familiar:OnFamiliarUpdate(familiar)
         "ShootAnimFrames",
         shootAnimFrames
     )
+end
+
+
+---@param familiar EntityFamiliar
+---@param player EntityPlayer
+---@param familiarStats MonsterManualStats
+local function UpdateBrimstoneFamiliar(familiar, player, familiarStats)
+    ---@type integer
+    local chargeFrames = TSIL.Entities.GetEntityData(
+        ImprovedMonsterManualMod,
+        familiar,
+        "ChargeFrames"
+    )
+    ---@type integer
+    local shootAnimFrames = TSIL.Entities.GetEntityData(
+        ImprovedMonsterManualMod,
+        familiar,
+        "ShootAnimFrames"
+    )
+    if not chargeFrames then chargeFrames = 0 end
+    if not shootAnimFrames then shootAnimFrames = 0 end
+
+    local maxChargeFrame = familiarStats.FireRate
+    if player:HasTrinket(TrinketType.TRINKET_FORGOTTEN_LULLABY) then
+        maxChargeFrame = maxChargeFrame / 2
+    end
+
+    if shootAnimFrames > 0 then
+        ChargeBar:SetCharge(familiar, 0, maxChargeFrame)
+        shootAnimFrames = shootAnimFrames - 1
+
+        TSIL.Entities.SetEntityData(
+            ImprovedMonsterManualMod,
+            familiar,
+            "ShootAnimFrames",
+            shootAnimFrames
+        )
+        return
+    end
+
+    local fireDir = player:GetFireDirection()
+    local sprite = familiar:GetSprite()
+
+    if fireDir == Direction.NO_DIRECTION then
+        --If fully charged, shoot in the direction, if not just play float anim
+        if chargeFrames == maxChargeFrame then
+            --We need to get the direction from the last animation, since in this frame
+            --we're no longer pressing anything
+
+            ---@type number
+            local fireAngle
+
+            if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.AIMBOT) then
+                local closestEnemy = GetClosestEnemy(familiar)
+
+                if closestEnemy then
+                    fireAngle = (familiar.Position - closestEnemy.Position):GetAngleDegrees()
+                    fireDir = TSIL.Direction.AngleToDirection(fireAngle)
+                end
+            end
+
+            if fireAngle == nil then
+                local currentAnim = sprite:GetAnimation()
+                for direction, anim in pairs(Constants.CHARGE_ANIM_PER_DIRECTION) do
+                    if anim == currentAnim then
+                        fireDir = direction
+                    end
+                end
+                fireAngle = TSIL.Direction.DirectionToDegrees(fireDir)
+            end
+
+            familiar.Color = Color(1, 1, 1, 1)
+
+            local shootAnim = Constants.SHOOT_ANIM_PER_DIRECTION[fireDir]
+            sprite:Play(shootAnim)
+
+            TSIL.Entities.SetEntityData(
+                ImprovedMonsterManualMod,
+                familiar,
+                "ShootAnimFrames",
+                Constants.FAMILIAR_BRIMSTONE_DURATION + 10
+            )
+
+            local laserOffset = Constants.LASER_OFFSET_PER_DIRECTION[fireDir]
+            local laserVariant = LaserVariant.THICK_RED
+            if TSIL.Utils.Flags.HasFlags(familiarStats.TearEffects, Constants.TearEffects.TECHNOLOGY) then
+                laserVariant = LaserVariant.BRIM_TECH
+            end
+
+            local laser = EntityLaser.ShootAngle(
+                laserVariant,
+                familiar.Position,
+                fireAngle,
+                Constants.FAMILIAR_BRIMSTONE_DURATION,
+                Vector(laserOffset.X * familiar.SpriteScale.X, laserOffset.Y * familiar.SpriteScale.Y),
+                familiar
+            )
+            if fireDir ~= Direction.UP then
+                laser.DepthOffset = 10
+            end
+
+            laser.Color = familiarStats.TearColor
+
+            laser.CollisionDamage = familiarStats.Damage
+            if player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) then
+                laser.CollisionDamage = laser.CollisionDamage * 2
+            end
+
+            laser:AddTearFlags(familiarStats.Flags)
+
+            local rng = TSIL.RNG.NewRNG(laser.InitSeed)
+            TearEffect.TriggerLaserEffects(familiar, laser, familiarStats, rng)
+
+            laser:Update()
+            laser.SpriteScale = Vector(0.4, 0.5)
+        else
+            local floatAnim = Constants.FLOAT_ANIM_PER_DIRECTION[fireDir]
+            if not sprite:IsPlaying(floatAnim) then
+                sprite:Play(floatAnim, true)
+            end
+        end
+        chargeFrames = 0
+    else
+        if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.AIMBOT) then
+            local closestEnemy = GetClosestEnemy(familiar)
+
+            if closestEnemy then
+                local fireAngle = (familiar.Position - closestEnemy.Position):GetAngleDegrees()
+                fireDir = TSIL.Direction.AngleToDirection(fireAngle)
+            end
+        end
+
+        local chargeAnim = Constants.CHARGE_ANIM_PER_DIRECTION[fireDir]
+        sprite:Play(chargeAnim, true)
+
+        if chargeFrames == maxChargeFrame then
+            sprite:SetLastFrame()
+            if familiar.FrameCount % 6 == 0 then
+                familiar.Color = Color(1, 1, 1, 1, 0.2)
+            elseif familiar.FrameCount % 3 == 0 then
+                familiar.Color = Color(1, 1, 1, 1)
+            end
+        else
+            local currentFrame = math.floor(chargeFrames / maxChargeFrame * Constants.MAX_CHARGE_ANIM_FRAME)
+            sprite:SetFrame(currentFrame)
+
+            chargeFrames = chargeFrames + 1
+        end
+    end
+
+    ChargeBar:SetCharge(familiar, chargeFrames, maxChargeFrame)
+
+    TSIL.Entities.SetEntityData(
+        ImprovedMonsterManualMod,
+        familiar,
+        "ChargeFrames",
+        chargeFrames
+    )
+end
+
+
+---@param familiar EntityFamiliar
+function Familiar:OnFamiliarUpdate(familiar)
+    familiar:FollowParent()
+
+    local player = familiar.Player
+    local playerIndex = TSIL.Players.GetPlayerIndex(player)
+
+    local familiarStatsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
+        ImprovedMonsterManualMod,
+        Constants.SaveKeys.PLAYERS_FAMILIAR_STATS
+    )
+
+    ---@type MonsterManualStats
+    local familiarStats = familiarStatsPerPlayer[tostring(playerIndex)]
+
+    if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.TWINS) then
+        familiar.SpriteScale = familiar.SpriteScale * 0.75
+    end
+
+    if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.INFESTED) then
+        OnInfestedFamiliarUpdate(player, familiar, familiarStats)
+    end
+
+    if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.BRIMSTONE) then
+        UpdateBrimstoneFamiliar(familiar, player, familiarStats)
+    else
+        UpdateShootingFamiliar(familiar, player, familiarStats)
+    end
 end
 ImprovedMonsterManualMod:AddCallback(
     ModCallbacks.MC_FAMILIAR_UPDATE,

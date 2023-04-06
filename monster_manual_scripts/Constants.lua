@@ -26,6 +26,24 @@ Constants.SHOOT_ANIM_PER_DIRECTION = {
 	[Direction.DOWN] = "FloatShootDown"
 }
 
+Constants.CHARGE_ANIM_PER_DIRECTION = {
+	[Direction.NO_DIRECTION] = "FloatDown",
+	[Direction.LEFT] = "ChargeLeft",
+	[Direction.UP] = "ChargeUp",
+	[Direction.RIGHT] = "ChargeRight",
+	[Direction.DOWN] = "ChargeDown"
+}
+
+Constants.LASER_OFFSET_PER_DIRECTION = {
+	[Direction.DOWN] = Vector(0, -23),
+	[Direction.LEFT] = Vector(-10, -23),
+	[Direction.RIGHT] = Vector(10, -23),
+	[Direction.UP] = Vector(0, -25),
+}
+Constants.MAX_CHARGE_ANIM_FRAME = 30
+Constants.FAMILIAR_BRIMSTONE_DURATION = 10
+Constants.CHARGE_BAR_RENDER_OFFSET = Vector(15, -30)
+
 Constants.PURPLE_TEAR_COLOR = Color(0.4, 0.15, 0.38, 1, 0.27843, 0, 0.4549)
 
 Constants.MAX_GREEN_UPGRADES = 5

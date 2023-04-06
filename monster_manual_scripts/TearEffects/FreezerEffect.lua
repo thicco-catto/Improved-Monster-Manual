@@ -11,7 +11,10 @@ TearEffect.AddTearEffect(
             tear:ChangeVariant(TearVariant.ICE)
         end
     end,
-    function (familiar, laser, stats)
-        print("lol")
+    function (_, laser, stats, rng)
+        local baseChance = 15 + stats.Luck * 3
+        if rng:RandomInt(100) < baseChance then
+            laser:AddTearFlags(TearFlags.TEAR_FREEZE)
+        end
     end
 )

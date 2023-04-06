@@ -131,7 +131,6 @@ TearEffect.AddTearEffect(
             true
         )
     end,
-    function (familiar, laser, stats)
-        laser:AddTearFlags(TearFlags.TEAR_POISON)
+    function ()
     end
 )

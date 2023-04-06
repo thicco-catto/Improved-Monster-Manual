@@ -89,6 +89,7 @@ require("monster_manual_scripts.StatsUI")
 ------------------------------------------------
 require("monster_manual_scripts.BaseFamiliars.BookwormFamiliar")
 require("monster_manual_scripts.BaseFamiliars.CrossFamiliar")
+require("monster_manual_scripts.BaseFamiliars.DevilFamiliar")
 require("monster_manual_scripts.BaseFamiliars.KeeperFamiliar")
 require("monster_manual_scripts.BaseFamiliars.PlanetFamiliar")
 require("monster_manual_scripts.BaseFamiliars.SkeletonFamiliar")
