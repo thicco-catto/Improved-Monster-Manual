@@ -1,7 +1,7 @@
-local ItemOverride = {}
+local ItemOverride    = {}
 
-local Constants = require("monster_manual_scripts.Constants")
-local Helpers = require("monster_manual_scripts.Helpers")
+local Constants       = require("monster_manual_scripts.Constants")
+local Helpers         = require("monster_manual_scripts.Helpers")
 local FamiliarUpgrade = require("monster_manual_scripts.FamiliarUpgrade")
 local BaseFamiliar    = require("monster_manual_scripts.BaseFamiliar")
 
@@ -24,7 +24,7 @@ local function StartUI(player, rng)
     end
 
     local layer = 2
-    TSIL.Utils.Tables.ForEach(upgrades, function (_, upgrade)
+    TSIL.Utils.Tables.ForEach(upgrades, function(_, upgrade)
         Constants.STATS_UI_SPRITE:ReplaceSpritesheet(layer, "gfx/ui/upgrades/" .. upgrade.sprite .. ".png")
         layer = layer + 1
         Constants.STATS_UI_SPRITE:ReplaceSpritesheet(layer, "gfx/ui/upgrades/" .. upgrade.sprite .. "_glow.png")
@@ -68,8 +68,9 @@ local function ExplodeBook(player, activeSlot)
 
     local familiars = Helpers.GetAllNonPermanentFamiliars(player)
 
-    TSIL.Utils.Tables.ForEach(familiars, function (_, familiar)
-        permanentFamiliars[familiar.InitSeed] = TSIL.Utils.DeepCopy.DeepCopy(familiarStats, TSIL.Enums.SerializationType.NONE)
+    TSIL.Utils.Tables.ForEach(familiars, function(_, familiar)
+        permanentFamiliars[familiar.InitSeed] = TSIL.Utils.DeepCopy.DeepCopy(familiarStats,
+        TSIL.Enums.SerializationType.NONE)
     end)
 
     local numPersistentFamiliarsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
@@ -96,11 +97,40 @@ local function ExplodeBook(player, activeSlot)
     monsterManualInfoPerPlayer[playerIndex] = nil
 
     player:RemoveCollectible(CollectibleType.COLLECTIBLE_MONSTER_MANUAL, false, activeSlot, false)
+
+    player:AnimateCollectible(CollectibleType.COLLECTIBLE_MONSTER_MANUAL)
+
+    local rng = TSIL.RNG.NewRNG()
+
+    TSIL.Utils.Functions.RunInFrames(function()
+        SFXManager():Play(SoundEffect.SOUND_PAPER_IN)
+        local numBloodParticles = TSIL.Random.GetRandomInt(15, 30, rng)
+
+        for _ = 1, numBloodParticles, 1 do
+            local speed = TSIL.Random.GetRandomFloat(4, 6, rng)
+            local angle = TSIL.Random.GetRandomInt(0, 360, rng)
+
+            local velocity = Vector.FromAngle(angle):Resized(speed)
+
+            local particle = TSIL.EntitySpecific.SpawnEffect(
+                EffectVariant.TOOTH_PARTICLE,
+                0,
+                player.Position + Vector(0, -40),
+                velocity
+            )
+
+            local sprite = particle:GetSprite()
+            sprite:ReplaceSpritesheet(0, "gfx/effects/monster_manual_paper_particle.png")
+            sprite:LoadGraphics()
+        end
+    end, 20)
 end
 
 
 ---@param player EntityPlayer
 function ItemOverride:PreMonsterManualUse(_, rng, player, _, activeSlot)
+    SFXManager():Play(SoundEffect.SOUND_SATAN_GROW)
+
     local playersUsedMonsterManual = TSIL.SaveManager.GetPersistentVariable(
         ImprovedMonsterManualMod,
         Constants.SaveKeys.PLAYERS_USED_MONSTER_MANUAL
@@ -150,6 +180,7 @@ function ItemOverride:PreMonsterManualUse(_, rng, player, _, activeSlot)
 
     return true
 end
+
 ImprovedMonsterManualMod:AddCallback(
     ModCallbacks.MC_PRE_USE_ITEM,
     ItemOverride.PreMonsterManualUse,

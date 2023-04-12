@@ -53,9 +53,9 @@ Constants.CHARGE_BAR_RENDER_OFFSET = Vector(15, -30)
 
 Constants.PURPLE_TEAR_COLOR = Color(0.4, 0.15, 0.38, 1, 0.27843, 0, 0.4549)
 
-Constants.MAX_GREEN_UPGRADES = 1
-Constants.MAX_YELLOW_UPGRADES = 1
-Constants.MAX_BLUE_UPGRADES = 1
+Constants.MAX_GREEN_UPGRADES = 5
+Constants.MAX_YELLOW_UPGRADES = 2
+Constants.MAX_BLUE_UPGRADES = 3
 
 local function LoadStatsUISprite()
 	local spr = Sprite()
