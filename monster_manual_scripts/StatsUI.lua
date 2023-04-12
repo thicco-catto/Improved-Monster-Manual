@@ -19,7 +19,7 @@ local function CheckPlayerChoosing(player, data)
         )
 
         ---@type MonsterManualStats
-        local familiarStats = familiarStatsPerPlayer[tostring(playerIndex)]
+        local familiarStats = familiarStatsPerPlayer[playerIndex]
 
         local playerFamiliars = TSIL.Familiars.GetPlayerFamiliars(player)
 
@@ -36,7 +36,7 @@ local function CheckPlayerChoosing(player, data)
             ImprovedMonsterManualMod,
             Constants.SaveKeys.PLAYERS_MONSTER_MANUAL_INFO
         )
-        local monsterManualInfo = monsterManualInfoPerPlayer[tostring(playerIndex)]
+        local monsterManualInfo = monsterManualInfoPerPlayer[playerIndex]
 
         monsterManualInfo.UpgradesChosen[#monsterManualInfo.UpgradesChosen+1] = upgrade.sprite
 
@@ -83,11 +83,30 @@ end
 local function RenderUpgrades(_, data)
     local yPos = Isaac.GetScreenHeight() / 2
     local xPos = Isaac.GetScreenWidth() / 2
+    local renderPos = Vector(xPos, yPos)
 
     local anim = "Selected" .. data.currentlySelected
     Constants.STATS_UI_SPRITE:Play(anim, true)
 
-    Constants.STATS_UI_SPRITE:Render(Vector(xPos, yPos))
+    Constants.STATS_UI_SPRITE:Render(renderPos)
+
+    local coatHangerIndex
+    TSIL.Utils.Tables.ForEach(data.upgrades, function (index, upgrade)
+        if upgrade.sprite == "coathanger" then
+            coatHangerIndex = index
+        end
+    end)
+
+    if not coatHangerIndex then return end
+
+    local coatHangerAnim = "Unselected"
+    if coatHangerIndex == data.currentlySelected then
+        coatHangerAnim = "Selected"
+    end
+    coatHangerAnim = coatHangerAnim .. coatHangerIndex
+
+    Constants.COAT_HANGER_STATS_UI_SPRITE:Play(coatHangerAnim, true)
+    Constants.COAT_HANGER_STATS_UI_SPRITE:Render(renderPos)
 end
 
 
@@ -101,24 +120,26 @@ local function OnPlayerRender(player)
 
     if not data then return end
 
-    local currentFrame = Game():GetFrameCount()
-    local frameDiff = currentFrame - data.frameUsed
+    if not Game():IsPaused() then
+        local currentFrame = Game():GetFrameCount()
+        local frameDiff = currentFrame - data.frameUsed
 
-    if frameDiff > 10 and CheckPlayerChoosing(player, data) then
-        player:AnimateCollectible(CollectibleType.COLLECTIBLE_MONSTER_MANUAL, "HideItem", "PlayerPickup")
+        if frameDiff > 10 and CheckPlayerChoosing(player, data) then
+            player:AnimateCollectible(CollectibleType.COLLECTIBLE_MONSTER_MANUAL, "HideItem", "PlayerPickup")
 
-        Helpers.SetTemporaryPlayerData(
-            player,
-            "UsingMonsterManualData",
-            nil
-        )
+            Helpers.SetTemporaryPlayerData(
+                player,
+                "UsingMonsterManualData",
+                nil
+            )
 
-        TSIL.Pause.Unpause()
+            TSIL.Pause.Unpause()
 
-        return
+            return
+        end
+
+        CheckPlayerMovingArrow(player, data)
     end
-
-    CheckPlayerMovingArrow(player, data)
 
     RenderUpgrades(player, data)
 end

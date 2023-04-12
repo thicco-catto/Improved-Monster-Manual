@@ -4,6 +4,10 @@ Constants.FamiliarVariant = {
     MONSTER_MANUAL_FAMILIAR = Isaac.GetEntityVariantByName("Monster Manual Familiar")
 }
 
+Constants.SoundEffect = {
+	FAMILIAR_DEATH = Isaac.GetSoundIdByName("monster manual familiar death")
+}
+
 Constants.SaveKeys = {
     PLAYERS_USED_MONSTER_MANUAL = "PLAYERS_USED_MONSTER_MANUAL",
     PLAYERS_FAMILIAR_STATS = "PLAYERS_FAMILIAR_STATS",
@@ -55,8 +59,14 @@ local function LoadStatsUISprite()
 	spr:Load("gfx/stat_choosing_ui.anm2", true)
 	return spr
 end
-
 Constants.STATS_UI_SPRITE = LoadStatsUISprite()
+
+local function LoadCoatHangerUISprite()
+	local spr = Sprite()
+	spr:Load("gfx/coat_hanger_ui.anm2", true)
+	return spr
+end
+Constants.COAT_HANGER_STATS_UI_SPRITE = LoadCoatHangerUISprite()
 
 ---@enum ItemDrops
 Constants.ItemDrops = {

@@ -15,7 +15,7 @@ local function StartUI(player, rng)
         ImprovedMonsterManualMod,
         Constants.SaveKeys.PLAYERS_MONSTER_MANUAL_INFO
     )
-    local monsterManualInfo = monsterManualInfoPerPlayer[tostring(playerIndex)]
+    local monsterManualInfo = monsterManualInfoPerPlayer[playerIndex]
 
     local upgrades = FamiliarUpgrade.GetRandomUpgrades(rng, monsterManualInfo)
 
@@ -52,7 +52,7 @@ function ItemOverride:PreMonsterManualUse(_, rng, player)
     )
     local playerIndex = TSIL.Players.GetPlayerIndex(player)
 
-    local hasUsedMonsterManual = playersUsedMonsterManual[tostring(playerIndex)]
+    local hasUsedMonsterManual = playersUsedMonsterManual[playerIndex]
 
     if hasUsedMonsterManual then
         TSIL.Pause.Pause()
@@ -69,7 +69,7 @@ function ItemOverride:PreMonsterManualUse(_, rng, player)
             Constants.SaveKeys.PLAYERS_FAMILIAR_STATS
         )
 
-        familiarStatsPerPlayer[tostring(playerIndex)] = BaseFamiliar.GetBaseStats()
+        familiarStatsPerPlayer[playerIndex] = BaseFamiliar.GetBaseStats()
 
         ---@type MonsterManualInfo[]
         local monsterManualInfoPerPlayer = TSIL.SaveManager.GetPersistentVariable(
@@ -77,14 +77,14 @@ function ItemOverride:PreMonsterManualUse(_, rng, player)
             Constants.SaveKeys.PLAYERS_MONSTER_MANUAL_INFO
         )
 
-        monsterManualInfoPerPlayer[tostring(playerIndex)] = {
+        monsterManualInfoPerPlayer[playerIndex] = {
             NumBlueUpgrades = 0,
             NumGreenUpgrades = 0,
             NumYellowUpgrades = 0,
             UpgradesChosen = {},
         }
 
-        playersUsedMonsterManual[tostring(playerIndex)] = true
+        playersUsedMonsterManual[playerIndex] = true
         player:AddCacheFlags(CacheFlag.CACHE_FAMILIARS)
         player:EvaluateItems()
     end

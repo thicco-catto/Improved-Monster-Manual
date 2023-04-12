@@ -12,7 +12,7 @@ function Familiar:OnFamiliarCache(player)
     )
     local playerIndex = TSIL.Players.GetPlayerIndex(player)
 
-    local hasUsedMonsterManual = playersUsedMonsterManual[tostring(playerIndex)]
+    local hasUsedMonsterManual = playersUsedMonsterManual[playerIndex]
 
     if not hasUsedMonsterManual then return end
 
@@ -22,7 +22,7 @@ function Familiar:OnFamiliarCache(player)
     )
 
     ---@type MonsterManualStats
-    local familiarStats = familiarStatsPerPlayer[tostring(playerIndex)]
+    local familiarStats = familiarStatsPerPlayer[playerIndex]
 
     local numFamiliars = 1
 
@@ -54,7 +54,7 @@ function Familiar:OnFamiliarInit(familiar)
     )
 
     ---@type MonsterManualStats
-    local familiarStats = familiarStatsPerPlayer[tostring(playerIndex)]
+    local familiarStats = familiarStatsPerPlayer[playerIndex]
 
     local sprite = familiar:GetSprite()
     sprite:ReplaceSpritesheet(0, "gfx/familiars/" .. familiarStats.Sprite .. ".png")
@@ -194,6 +194,9 @@ local function UpdateShootingFamiliar(familiar, player, familiarStats)
     )
     if not shootAnimFrames then shootAnimFrames = 0 end
     local fireDir = player:GetFireDirection()
+    if TSIL.Pause.IsPaused() then
+        fireDir = Direction.NO_DIRECTION
+    end
     local fireVector = TSIL.Direction.DirectionToVector(fireDir)
     local sprite = familiar:GetSprite()
 
@@ -305,6 +308,9 @@ local function UpdateBrimstoneFamiliar(familiar, player, familiarStats)
     end
 
     local fireDir = player:GetFireDirection()
+    if TSIL.Pause.IsPaused() then
+        fireDir = Direction.NO_DIRECTION
+    end
     local sprite = familiar:GetSprite()
 
     if fireDir == Direction.NO_DIRECTION then
@@ -438,7 +444,7 @@ function Familiar:OnFamiliarUpdate(familiar)
     )
 
     ---@type MonsterManualStats
-    local familiarStats = familiarStatsPerPlayer[tostring(playerIndex)]
+    local familiarStats = familiarStatsPerPlayer[playerIndex]
 
     if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.TWINS) then
         familiar.SpriteScale = familiar.SpriteScale * 0.75
@@ -476,7 +482,7 @@ function Familiar:OnRoomClear()
         )
 
         ---@type MonsterManualStats
-        local familiarStats = familiarStatsPerPlayer[tostring(playerIndex)]
+        local familiarStats = familiarStatsPerPlayer[playerIndex]
 
         ItemDrop.TriggerDrops(familiar, familiarStats)
     end)
@@ -503,7 +509,7 @@ function Familiar:OnFamiliarCollision(familiar, entity)
     )
 
     ---@type MonsterManualStats
-    local familiarStats = familiarStatsPerPlayer[tostring(playerIndex)]
+    local familiarStats = familiarStatsPerPlayer[playerIndex]
 
     if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.DRIED) then
         local rng = familiar:GetDropRNG()

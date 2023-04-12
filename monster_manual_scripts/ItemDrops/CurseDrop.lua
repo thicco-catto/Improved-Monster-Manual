@@ -46,8 +46,9 @@ ItemDrop.AddItemDrop(
         local rng = familiar:GetDropRNG()
 
         local chance = 10 + stats.Luck * 5
+        local roll = rng:RandomInt(100)
 
-        if rng:RandomInt(100) >= chance then return end
+        if roll >= chance then return end
 
         local toSpawn = TSIL.Random.GetRandomElementsFromTable(
             curseSpawnings,

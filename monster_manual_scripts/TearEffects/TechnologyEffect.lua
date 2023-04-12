@@ -67,7 +67,7 @@ local function ShootTechLaser(tear)
     )
 
     ---@type MonsterManualStats
-    local familiarStats = familiarStatsPerPlayer[tostring(playerIndex)]
+    local familiarStats = familiarStatsPerPlayer[playerIndex]
 
     local rng = TSIL.RNG.NewRNG(tear.InitSeed)
     local shootAngle = TSIL.Random.GetRandomInt(0, 360, rng)

@@ -149,4 +149,27 @@ function FamiliarUpgrade.IsUpgradeYellow(upgradeToCheck)
 end
 
 
+---@param sprite string
+---@return FamiliarUpgrade
+function FamiliarUpgrade.GetUpgradeFromSprite(sprite)
+    local found = TSIL.Utils.Tables.FindFirst(BlueFamiliarUpgrades, function (_, upgrade)
+        return upgrade.sprite == sprite
+    end)
+
+    if found then return found end
+
+    found = TSIL.Utils.Tables.FindFirst(RepeatableFamiliarUpgrades, function (_, upgrade)
+        return upgrade.sprite == sprite
+    end)
+
+    if found then return found end
+
+    found = TSIL.Utils.Tables.FindFirst(YellowFamiliarUpgrades, function (_, upgrade)
+        return upgrade.sprite == sprite
+    end)
+
+    return found
+end
+
+
 return FamiliarUpgrade

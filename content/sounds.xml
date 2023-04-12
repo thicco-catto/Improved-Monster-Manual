@@ -1,0 +1,7 @@
+<sounds root="sfx/">
+    <sound name="monster manual familiar death">
+        <sample weight="1" path="deathscream.wav"/>
+        <sample weight="1" path="deathscream2.wav"/>
+        <sample weight="1" path="deathscream3.wav"/>
+    </sound>
+</sounds>
