@@ -1,5 +1,6 @@
 local FamiliarUpgrade = require("monster_manual_scripts.FamiliarUpgrade")
 local Constants = require("monster_manual_scripts.Constants")
+local Helpers   = require("monster_manual_scripts.Helpers")
 
 
 local POINTS_PER_PICKUP = {
@@ -128,11 +129,8 @@ end
 
 
 ---@param player EntityPlayer
-function ExplodeFamiliars(player)
-    local familiars = TSIL.Familiars.GetPlayerFamiliars(player)
-    familiars = TSIL.Utils.Tables.Filter(familiars, function (_, familiar)
-        return familiar.Variant == Constants.FamiliarVariant.MONSTER_MANUAL_FAMILIAR
-    end)
+local function ExplodeFamiliars(player)
+    local familiars = Helpers.GetAllNonPermanentFamiliars(player)
 
     TSIL.Utils.Tables.ForEach(familiars, function (_, familiar)
         SpawnBloodEffects(familiar)

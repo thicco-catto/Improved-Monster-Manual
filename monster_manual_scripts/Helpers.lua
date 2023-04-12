@@ -1,4 +1,5 @@
 local Helpers = {}
+local Constants = require("monster_manual_scripts.Constants")
 
 local tempPlayerData = {}
 
@@ -44,5 +45,64 @@ ImprovedMonsterManualMod:AddPriorityCallback(
     CallbackPriority.IMPORTANT,
     OnNewRoom
 )
+
+
+---@param familiar EntityFamiliar
+---@return MonsterManualStats
+function Helpers.GetFamiliarStats(familiar)
+    local permanentFamiliarStats = TSIL.SaveManager.GetPersistentVariable(
+        ImprovedMonsterManualMod,
+        Constants.SaveKeys.PERMANENT_FAMILIAR_STATS
+    )
+
+    ---@type MonsterManualStats
+    local familiarStats = permanentFamiliarStats[familiar.InitSeed]
+
+    if not familiarStats then
+        local player = familiar.Player
+        local playerIndex = TSIL.Players.GetPlayerIndex(player)
+
+        local familiarStatsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
+            ImprovedMonsterManualMod,
+            Constants.SaveKeys.PLAYERS_FAMILIAR_STATS
+        )
+
+        familiarStats = familiarStatsPerPlayer[playerIndex]
+    end
+
+    return familiarStats
+end
+
+
+---@param familiar EntityFamiliar
+---@return boolean
+function Helpers.IsFamiliarPermanent(familiar)
+    local permanentFamiliarStats = TSIL.SaveManager.GetPersistentVariable(
+        ImprovedMonsterManualMod,
+        Constants.SaveKeys.PLAYERS_FAMILIAR_STATS
+    )
+
+    ---@type MonsterManualStats
+    local familiarStats = permanentFamiliarStats[familiar.InitSeed]
+
+    return familiarStats ~= nil
+end
+
+
+---@param player EntityPlayer
+function Helpers.GetAllNonPermanentFamiliars(player)
+    local permanentFamiliars = TSIL.SaveManager.GetPersistentVariable(
+        ImprovedMonsterManualMod,
+        Constants.SaveKeys.PERMANENT_FAMILIAR_STATS
+    )
+
+    local familiars = TSIL.Familiars.GetPlayerFamiliars(player)
+    familiars = TSIL.Utils.Tables.Filter(familiars, function (_, familiar)
+        return familiar.Variant == Constants.FamiliarVariant.MONSTER_MANUAL_FAMILIAR and
+            not permanentFamiliars[familiar.InitSeed]
+    end)
+
+    return familiars
+end
 
 return Helpers

@@ -75,6 +75,27 @@ TSIL.SaveManager.AddPersistentVariable(
     TSIL.Enums.VariablePersistenceMode.RESET_RUN
 )
 
+TSIL.SaveManager.AddPersistentVariable(
+    ImprovedMonsterManualMod,
+    Constants.SaveKeys.PLAYERS_HAD_MONSTER_MANUAL,
+    {},
+    TSIL.Enums.VariablePersistenceMode.RESET_RUN
+)
+
+TSIL.SaveManager.AddPersistentVariable(
+    ImprovedMonsterManualMod,
+    Constants.SaveKeys.PERMANENT_FAMILIAR_STATS,
+    {},
+    TSIL.Enums.VariablePersistenceMode.RESET_RUN
+)
+
+TSIL.SaveManager.AddPersistentVariable(
+    ImprovedMonsterManualMod,
+    Constants.SaveKeys.NUM_PERMANENT_FAMILIARS_PER_PLAYER,
+    {},
+    TSIL.Enums.VariablePersistenceMode.RESET_RUN
+)
+
 
 ------------------------------------------------
 ---- MAIN SCRIPTS ------------------------------
@@ -132,21 +153,21 @@ require("monster_manual_scripts.Upgrades.BrainWormUpgrade")
 require("monster_manual_scripts.Upgrades.BurningTearsUpgrade")
 require("monster_manual_scripts.Upgrades.CharmingTearsUpgrade")
 require("monster_manual_scripts.Upgrades.CoatHangerUpgrade")
--- require("monster_manual_scripts.Upgrades.CriticalTearUpgrade")
--- require("monster_manual_scripts.Upgrades.CrystalBallUpgrade")
--- require("monster_manual_scripts.Upgrades.DamageUpgrade")
--- require("monster_manual_scripts.Upgrades.DriedUpUpgrade")
--- require("monster_manual_scripts.Upgrades.EatFiveBatteriesUpgrade")
--- require("monster_manual_scripts.Upgrades.FearTearsUpgrade")
--- require("monster_manual_scripts.Upgrades.FireRateUpgrade")
--- require("monster_manual_scripts.Upgrades.FreezerTearsUpgrade")
--- require("monster_manual_scripts.Upgrades.HolyLightTearsUpgrade")
--- require("monster_manual_scripts.Upgrades.HookWormUpgrade")
--- require("monster_manual_scripts.Upgrades.InfestedUpgrade")
--- require("monster_manual_scripts.Upgrades.KetamineBabyUpgrade")
--- require("monster_manual_scripts.Upgrades.KissesUpgrade")
--- require("monster_manual_scripts.Upgrades.LazyWormUpgrade")
--- require("monster_manual_scripts.Upgrades.LuckUpgrade")
+require("monster_manual_scripts.Upgrades.CriticalTearUpgrade")
+require("monster_manual_scripts.Upgrades.CrystalBallUpgrade")
+require("monster_manual_scripts.Upgrades.DamageUpgrade")
+require("monster_manual_scripts.Upgrades.DriedUpUpgrade")
+require("monster_manual_scripts.Upgrades.EatFiveBatteriesUpgrade")
+require("monster_manual_scripts.Upgrades.FearTearsUpgrade")
+require("monster_manual_scripts.Upgrades.FireRateUpgrade")
+require("monster_manual_scripts.Upgrades.FreezerTearsUpgrade")
+require("monster_manual_scripts.Upgrades.HolyLightTearsUpgrade")
+require("monster_manual_scripts.Upgrades.HookWormUpgrade")
+require("monster_manual_scripts.Upgrades.InfestedUpgrade")
+require("monster_manual_scripts.Upgrades.KetamineBabyUpgrade")
+require("monster_manual_scripts.Upgrades.KissesUpgrade")
+require("monster_manual_scripts.Upgrades.LazyWormUpgrade")
+require("monster_manual_scripts.Upgrades.LuckUpgrade")
 require("monster_manual_scripts.Upgrades.MonocularUpgrade")
 require("monster_manual_scripts.Upgrades.PoisonTearsUpgrade")
 require("monster_manual_scripts.Upgrades.PulseWormUpgrade")

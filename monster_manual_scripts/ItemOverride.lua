@@ -19,6 +19,10 @@ local function StartUI(player, rng)
 
     local upgrades = FamiliarUpgrade.GetRandomUpgrades(rng, monsterManualInfo)
 
+    if #upgrades == 0 then
+        return false
+    end
+
     local layer = 2
     TSIL.Utils.Tables.ForEach(upgrades, function (_, upgrade)
         Constants.STATS_UI_SPRITE:ReplaceSpritesheet(layer, "gfx/ui/upgrades/" .. upgrade.sprite .. ".png")
@@ -41,11 +45,62 @@ local function StartUI(player, rng)
         "UsingMonsterManualData",
         usingMonsterManualData
     )
+
+    return true
 end
 
 
 ---@param player EntityPlayer
-function ItemOverride:PreMonsterManualUse(_, rng, player)
+---@param activeSlot ActiveSlot
+local function ExplodeBook(player, activeSlot)
+    local playerIndex = TSIL.Players.GetPlayerIndex(player)
+    local familiarStatsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
+        ImprovedMonsterManualMod,
+        Constants.SaveKeys.PLAYERS_FAMILIAR_STATS
+    )
+    ---@type MonsterManualStats
+    local familiarStats = familiarStatsPerPlayer[playerIndex]
+
+    local permanentFamiliars = TSIL.SaveManager.GetPersistentVariable(
+        ImprovedMonsterManualMod,
+        Constants.SaveKeys.PERMANENT_FAMILIAR_STATS
+    )
+
+    local familiars = Helpers.GetAllNonPermanentFamiliars(player)
+
+    TSIL.Utils.Tables.ForEach(familiars, function (_, familiar)
+        permanentFamiliars[familiar.InitSeed] = TSIL.Utils.DeepCopy.DeepCopy(familiarStats, TSIL.Enums.SerializationType.NONE)
+    end)
+
+    local numPersistentFamiliarsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
+        ImprovedMonsterManualMod,
+        Constants.SaveKeys.NUM_PERMANENT_FAMILIARS_PER_PLAYER
+    )
+    local currentNum = numPersistentFamiliarsPerPlayer[playerIndex]
+    if currentNum == nil then currentNum = 0 end
+    currentNum = currentNum + #familiars
+    numPersistentFamiliarsPerPlayer[playerIndex] = currentNum
+
+    familiarStatsPerPlayer[playerIndex] = nil
+
+    local playersUsedMonsterManual = TSIL.SaveManager.GetPersistentVariable(
+        ImprovedMonsterManualMod,
+        Constants.SaveKeys.PLAYERS_USED_MONSTER_MANUAL
+    )
+    playersUsedMonsterManual[playerIndex] = false
+
+    local monsterManualInfoPerPlayer = TSIL.SaveManager.GetPersistentVariable(
+        ImprovedMonsterManualMod,
+        Constants.SaveKeys.PLAYERS_MONSTER_MANUAL_INFO
+    )
+    monsterManualInfoPerPlayer[playerIndex] = nil
+
+    player:RemoveCollectible(CollectibleType.COLLECTIBLE_MONSTER_MANUAL, false, activeSlot, false)
+end
+
+
+---@param player EntityPlayer
+function ItemOverride:PreMonsterManualUse(_, rng, player, _, activeSlot)
     local playersUsedMonsterManual = TSIL.SaveManager.GetPersistentVariable(
         ImprovedMonsterManualMod,
         Constants.SaveKeys.PLAYERS_USED_MONSTER_MANUAL
@@ -55,11 +110,15 @@ function ItemOverride:PreMonsterManualUse(_, rng, player)
     local hasUsedMonsterManual = playersUsedMonsterManual[playerIndex]
 
     if hasUsedMonsterManual then
-        TSIL.Pause.Pause()
+        local foundUpgrades = StartUI(player, rng)
 
-        player:AnimateCollectible(CollectibleType.COLLECTIBLE_MONSTER_MANUAL, "LiftItem", "PlayerPickup")
+        if not foundUpgrades then
+            ExplodeBook(player, activeSlot)
+        else
+            TSIL.Pause.Pause()
 
-        StartUI(player, rng)
+            player:AnimateCollectible(CollectibleType.COLLECTIBLE_MONSTER_MANUAL, "LiftItem", "PlayerPickup")
+        end
     else
         player:AnimateCollectible(CollectibleType.COLLECTIBLE_MONSTER_MANUAL)
 

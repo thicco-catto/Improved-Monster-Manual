@@ -3,18 +3,18 @@ local Constants = require("monster_manual_scripts.Constants")
 local ItemDrop = require("monster_manual_scripts.ItemDrop")
 local TearEffect = require("monster_manual_scripts.TearEffect")
 local ChargeBar = require("monster_manual_scripts.ChargeBar")
+local Helpers   = require("monster_manual_scripts.Helpers")
 
 ---@param player EntityPlayer
 function Familiar:OnFamiliarCache(player)
-    local playersUsedMonsterManual = TSIL.SaveManager.GetPersistentVariable(
-        ImprovedMonsterManualMod,
-        Constants.SaveKeys.PLAYERS_USED_MONSTER_MANUAL
-    )
     local playerIndex = TSIL.Players.GetPlayerIndex(player)
 
-    local hasUsedMonsterManual = playersUsedMonsterManual[playerIndex]
-
-    if not hasUsedMonsterManual then return end
+    local numPersistentFamiliarsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
+        ImprovedMonsterManualMod,
+        Constants.SaveKeys.NUM_PERMANENT_FAMILIARS_PER_PLAYER
+    )
+    local permanentFamiliars = numPersistentFamiliarsPerPlayer[playerIndex]
+    if permanentFamiliars == nil then permanentFamiliars = 0 end
 
     local familiarStatsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
         ImprovedMonsterManualMod,
@@ -23,16 +23,23 @@ function Familiar:OnFamiliarCache(player)
 
     ---@type MonsterManualStats
     local familiarStats = familiarStatsPerPlayer[playerIndex]
+    local numFamiliars = 0
 
-    local numFamiliars = 1
+    if familiarStats then
+        numFamiliars = 1
 
-    if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.TWINS) then
-        numFamiliars = 2
+        if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.TWINS) then
+            numFamiliars = 2
+        end
+    end
+
+    if not player:HasCollectible(CollectibleType.COLLECTIBLE_MONSTER_MANUAL) then
+        numFamiliars = 0
     end
 
     player:CheckFamiliar(
         Constants.FamiliarVariant.MONSTER_MANUAL_FAMILIAR,
-        numFamiliars,
+        permanentFamiliars + numFamiliars,
         player:GetCollectibleRNG(CollectibleType.COLLECTIBLE_MONSTER_MANUAL)
     )
 end
@@ -43,18 +50,51 @@ ImprovedMonsterManualMod:AddCallback(
 )
 
 
----@param familiar EntityFamiliar
-function Familiar:OnFamiliarInit(familiar)
-    local player = familiar.Player
+---@param player EntityPlayer
+function Familiar:OnPlayerPeffectUpdate(player)
     local playerIndex = TSIL.Players.GetPlayerIndex(player)
-
-    local familiarStatsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
+    local hadMonsterManualLastFramePerPlayer = TSIL.SaveManager.GetPersistentVariable(
         ImprovedMonsterManualMod,
-        Constants.SaveKeys.PLAYERS_FAMILIAR_STATS
+        Constants.SaveKeys.PLAYERS_HAD_MONSTER_MANUAL
     )
 
+    local hadMonsterManualLastFrame = hadMonsterManualLastFramePerPlayer[playerIndex]
+    local hasMonsterManualCurrent = player:HasCollectible(CollectibleType.COLLECTIBLE_MONSTER_MANUAL)
+
+    if hadMonsterManualLastFrame == nil then
+        hadMonsterManualLastFrame = hasMonsterManualCurrent
+    end
+
+    if hadMonsterManualLastFrame ~= hasMonsterManualCurrent then
+        if hasMonsterManualCurrent == false then
+            local familiars = Helpers.GetAllNonPermanentFamiliars(player)
+
+            TSIL.Utils.Tables.ForEach(familiars, function (_, familiar)
+                TSIL.EntitySpecific.SpawnEffect(
+                    EffectVariant.POOF01,
+                    0,
+                    familiar.Position
+                )
+                familiar:Remove()
+            end)
+        end
+
+        player:AddCacheFlags(CacheFlag.CACHE_FAMILIARS)
+        player:EvaluateItems()
+    end
+
+    hadMonsterManualLastFramePerPlayer[playerIndex] = hasMonsterManualCurrent
+end
+ImprovedMonsterManualMod:AddCallback(
+    TSIL.Enums.CustomCallback.POST_PEFFECT_UPDATE_REORDERED,
+    Familiar.OnPlayerPeffectUpdate
+)
+
+
+---@param familiar EntityFamiliar
+function Familiar:OnFamiliarInit(familiar)
     ---@type MonsterManualStats
-    local familiarStats = familiarStatsPerPlayer[playerIndex]
+    local familiarStats = Helpers.GetFamiliarStats(familiar)
 
     local sprite = familiar:GetSprite()
     sprite:ReplaceSpritesheet(0, "gfx/familiars/" .. familiarStats.Sprite .. ".png")
@@ -436,15 +476,9 @@ function Familiar:OnFamiliarUpdate(familiar)
     familiar:FollowParent()
 
     local player = familiar.Player
-    local playerIndex = TSIL.Players.GetPlayerIndex(player)
-
-    local familiarStatsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
-        ImprovedMonsterManualMod,
-        Constants.SaveKeys.PLAYERS_FAMILIAR_STATS
-    )
 
     ---@type MonsterManualStats
-    local familiarStats = familiarStatsPerPlayer[playerIndex]
+    local familiarStats = Helpers.GetFamiliarStats(familiar)
 
     if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.TWINS) then
         familiar.SpriteScale = familiar.SpriteScale * 0.75
@@ -473,16 +507,7 @@ function Familiar:OnRoomClear()
     )
 
     TSIL.Utils.Tables.ForEach(monsterManualFamiliars, function(_, familiar)
-        local player = familiar.Player
-        local playerIndex = TSIL.Players.GetPlayerIndex(player)
-
-        local familiarStatsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
-            ImprovedMonsterManualMod,
-            Constants.SaveKeys.PLAYERS_FAMILIAR_STATS
-        )
-
-        ---@type MonsterManualStats
-        local familiarStats = familiarStatsPerPlayer[playerIndex]
+        local familiarStats = Helpers.GetFamiliarStats(familiar)
 
         ItemDrop.TriggerDrops(familiar, familiarStats)
     end)
@@ -500,16 +525,7 @@ function Familiar:OnFamiliarCollision(familiar, entity)
     if not projectile then return end
     if projectile:HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then return end
 
-    local player = familiar.Player
-    local playerIndex = TSIL.Players.GetPlayerIndex(player)
-
-    local familiarStatsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
-        ImprovedMonsterManualMod,
-        Constants.SaveKeys.PLAYERS_FAMILIAR_STATS
-    )
-
-    ---@type MonsterManualStats
-    local familiarStats = familiarStatsPerPlayer[playerIndex]
+    local familiarStats = Helpers.GetFamiliarStats(familiar)
 
     if TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.DRIED) then
         local rng = familiar:GetDropRNG()
