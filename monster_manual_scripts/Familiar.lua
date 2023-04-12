@@ -37,10 +37,11 @@ function Familiar:OnFamiliarCache(player)
         numFamiliars = 0
     end
 
-    player:CheckFamiliar(
-        Constants.FamiliarVariant.MONSTER_MANUAL_FAMILIAR,
+    TSIL.Familiars.CheckFamiliar(
+        player,
+        CollectibleType.COLLECTIBLE_MONSTER_MANUAL,
         permanentFamiliars + numFamiliars,
-        player:GetCollectibleRNG(CollectibleType.COLLECTIBLE_MONSTER_MANUAL)
+        0
     )
 end
 ImprovedMonsterManualMod:AddCallback(
