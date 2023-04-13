@@ -123,7 +123,7 @@ local function ExplodeBook(player, activeSlot)
             sprite:ReplaceSpritesheet(0, "gfx/effects/monster_manual_paper_particle.png")
             sprite:LoadGraphics()
         end
-    end, 20)
+    end, 10)
 end
 
 

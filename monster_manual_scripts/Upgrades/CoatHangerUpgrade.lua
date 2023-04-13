@@ -149,7 +149,7 @@ FamiliarUpgrade.NewBlueFamiliarUpgrade(
     function (familiar)
         TSIL.Utils.Functions.RunInFrames(function ()
             SFXManager():Play(Constants.SoundEffect.FAMILIAR_DEATH)
-        end, 40)
+        end, 37)
         TSIL.Utils.Functions.RunInFrames(ExplodeFamiliars, 105, familiar.Player)
     end
 )

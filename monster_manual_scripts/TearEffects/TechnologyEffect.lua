@@ -1,5 +1,6 @@
 local TearEffect = require("monster_manual_scripts.TearEffect")
 local Constants = require("monster_manual_scripts.Constants")
+local Helpers = require("monster_manual_scripts.Helpers")
 
 
 ---@param ... EffectVariant
@@ -56,18 +57,9 @@ local function ShootTechLaser(tear)
     if not spawner then return end
     local familiar = spawner:ToFamiliar()
     if not familiar then return end
-    local player = familiar.Player
-    if not player then return end
-
-    local playerIndex = TSIL.Players.GetPlayerIndex(player)
-
-    local familiarStatsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
-        ImprovedMonsterManualMod,
-        Constants.SaveKeys.PLAYERS_FAMILIAR_STATS
-    )
 
     ---@type MonsterManualStats
-    local familiarStats = familiarStatsPerPlayer[playerIndex]
+    local familiarStats = Helpers.GetFamiliarStats(familiar)
 
     local rng = TSIL.RNG.NewRNG(tear.InitSeed)
     local shootAngle = TSIL.Random.GetRandomInt(0, 360, rng)
