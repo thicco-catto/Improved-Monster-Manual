@@ -1,6 +1,5 @@
----@diagnostic disable: duplicate-set-field
 local LOCAL_TSIL = {}
-local LOCAL_TSIL_VERSION = 0.26
+local LOCAL_TSIL_VERSION = 0.27
 
 --- Initializes the TSIL library
 ---@param FolderName string
@@ -114,9 +113,9 @@ function LOCAL_TSIL.Init(FolderName)
 		end)
 
 		--TODO: Handle not found files better (it is expected)
-		if not hasError then
-			print("Error loading script (" .. TSIL.__LOCAL_FOLDER .. "." .. script .. ") : " .. error)
-		end
+		-- if not hasError then
+		-- 	print("Error loading script (" .. TSIL.__LOCAL_FOLDER .. "." .. script .. ") : " .. error)
+		-- end
 	end
 
 	--INTERNAL CALLBACKS
