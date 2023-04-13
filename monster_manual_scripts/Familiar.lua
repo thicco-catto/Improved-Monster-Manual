@@ -367,7 +367,7 @@ local function UpdateBrimstoneFamiliar(familiar, player, familiarStats)
                 local closestEnemy = GetClosestEnemy(familiar)
 
                 if closestEnemy then
-                    fireAngle = (familiar.Position - closestEnemy.Position):GetAngleDegrees()
+                    fireAngle = (closestEnemy.Position - familiar.Position):GetAngleDegrees()
                     fireDir = TSIL.Direction.AngleToDirection(fireAngle)
                 end
             end
@@ -438,7 +438,7 @@ local function UpdateBrimstoneFamiliar(familiar, player, familiarStats)
             local closestEnemy = GetClosestEnemy(familiar)
 
             if closestEnemy then
-                local fireAngle = (familiar.Position - closestEnemy.Position):GetAngleDegrees()
+                local fireAngle = (closestEnemy.Position - familiar.Position):GetAngleDegrees()
                 fireDir = TSIL.Direction.AngleToDirection(fireAngle)
             end
         end

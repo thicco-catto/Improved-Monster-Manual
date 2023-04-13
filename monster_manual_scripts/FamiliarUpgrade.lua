@@ -2,6 +2,8 @@ local FamiliarUpgrade = {}
 
 local Constants = require("monster_manual_scripts.Constants")
 
+---@type table<string, boolean>
+local IncompatibleUpgradesWithBrimstone = {}
 
 ---@type FamiliarUpgrade[]
 local RepeatableFamiliarUpgrades = {}
@@ -33,8 +35,13 @@ end
 
 
 ---@param sprite string
+---@param isCompatibleWithBrimstone boolean
 ---@param onActivate fun(familiar: EntityFamiliar, stats: MonsterManualStats)
-function FamiliarUpgrade.NewBlueFamiliarUpgrade(sprite, onActivate)
+function FamiliarUpgrade.NewBlueFamiliarUpgrade(sprite, isCompatibleWithBrimstone, onActivate)
+    if not isCompatibleWithBrimstone then
+        IncompatibleUpgradesWithBrimstone[sprite] = true
+    end
+
     AddUpgradeToTable(BlueFamiliarUpgrades, sprite, onActivate)
 end
 
@@ -48,8 +55,11 @@ end
 
 ---@param rng RNG
 ---@param monsterManualInfo MonsterManualInfo
+---@param familiarStats MonsterManualStats
 ---@return FamiliarUpgrade[]
-function FamiliarUpgrade.GetRandomUpgrades(rng, monsterManualInfo)
+function FamiliarUpgrade.GetRandomUpgrades(rng, monsterManualInfo, familiarStats)
+    local hasBrimstone = TSIL.Utils.Flags.HasFlags(familiarStats.SpecialEffects, Constants.SpecialEffects.BRIMSTONE)
+
     ---@type FamiliarUpgrade[]
     local possibleUpgrades = {}
 
@@ -62,6 +72,10 @@ function FamiliarUpgrade.GetRandomUpgrades(rng, monsterManualInfo)
     if monsterManualInfo.NumBlueUpgrades < Constants.MAX_BLUE_UPGRADES then
         TSIL.Utils.Tables.ForEach(BlueFamiliarUpgrades, function (_, upgrade)
             if TSIL.Utils.Tables.IsIn(monsterManualInfo.UpgradesChosen, upgrade.sprite) then
+                return
+            end
+
+            if hasBrimstone and IncompatibleUpgradesWithBrimstone[upgrade.sprite] then
                 return
             end
 

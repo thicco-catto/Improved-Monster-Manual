@@ -2,6 +2,7 @@ local FamiliarUpgrade = require("monster_manual_scripts.FamiliarUpgrade")
 
 FamiliarUpgrade.NewBlueFamiliarUpgrade(
     "soybeans",
+    true,
     function (_, stats)
         stats.FireRate = 5
         stats.Damage = 0.5

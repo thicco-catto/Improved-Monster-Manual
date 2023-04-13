@@ -17,7 +17,13 @@ local function StartUI(player, rng)
     )
     local monsterManualInfo = monsterManualInfoPerPlayer[playerIndex]
 
-    local upgrades = FamiliarUpgrade.GetRandomUpgrades(rng, monsterManualInfo)
+    local familiarStatsPerPlayer = TSIL.SaveManager.GetPersistentVariable(
+        ImprovedMonsterManualMod,
+        Constants.SaveKeys.PLAYERS_FAMILIAR_STATS
+    )
+    local familiarStats = familiarStatsPerPlayer[playerIndex]
+
+    local upgrades = FamiliarUpgrade.GetRandomUpgrades(rng, monsterManualInfo, familiarStats)
 
     if #upgrades == 0 then
         return false

@@ -3,6 +3,7 @@ local Constants       = require("monster_manual_scripts.Constants")
 
 FamiliarUpgrade.NewBlueFamiliarUpgrade(
     "twins",
+    true,
     function(familiar, stats)
         stats.Damage = stats.Damage * 0.75
         stats.FireRate = math.floor(stats.FireRate * 1.25)

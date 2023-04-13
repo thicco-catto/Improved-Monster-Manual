@@ -146,6 +146,7 @@ end
 
 FamiliarUpgrade.NewBlueFamiliarUpgrade(
     "coathanger",
+    true,
     function (familiar)
         TSIL.Utils.Functions.RunInFrames(function ()
             SFXManager():Play(Constants.SoundEffect.FAMILIAR_DEATH)
