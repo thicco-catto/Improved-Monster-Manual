@@ -10,5 +10,6 @@ FamiliarUpgrade.NewBlueFamiliarUpgrade(
         stats.FallingAccel = stats.FallingAccel + 0.5
         stats.FireRate = stats.FireRate + 7
         stats.TearColor = Color(0.5, 0.9, 0.4)
+        stats.ShotSpeed = stats.ShotSpeed - 0.1
     end
 )
