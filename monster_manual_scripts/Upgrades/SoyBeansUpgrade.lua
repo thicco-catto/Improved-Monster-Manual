@@ -4,7 +4,7 @@ FamiliarUpgrade.NewBlueFamiliarUpgrade(
     "soybeans",
     true,
     function (_, stats)
-        stats.FireRate = 5
+        stats.FireRate = math.ceil(stats.FireRate * 0.3)
         stats.Damage = 0.5
     end
 )

@@ -8,7 +8,7 @@ BaseFamiliar.AddBaseFamiliar(
         Sprite = "thief_baby",
         Damage = 1,
         FireRate = 20,
-        Flags = TearFlags.TEAR_COIN_DROP,
+        Flags = TearFlags.TEAR_GREED_COIN,
         ItemDrops = Constants.ItemDrops.RANDOM_BOMB,
         Luck = 0,
         ShotSpeed = 1,
