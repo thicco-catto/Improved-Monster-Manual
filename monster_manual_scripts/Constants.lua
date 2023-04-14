@@ -3,6 +3,7 @@ local Constants = {}
 Constants.FamiliarVariant = {
     MONSTER_MANUAL_FAMILIAR = Isaac.GetEntityVariantByName("Monster Manual Familiar")
 }
+print(Constants.FamiliarVariant.MONSTER_MANUAL_FAMILIAR)
 
 Constants.SoundEffect = {
 	FAMILIAR_DEATH = Isaac.GetSoundIdByName("monster manual familiar death")

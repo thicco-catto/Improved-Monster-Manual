@@ -41,7 +41,7 @@ function Familiar:OnFamiliarCache(player)
         player,
         CollectibleType.COLLECTIBLE_MONSTER_MANUAL,
         permanentFamiliars + numFamiliars,
-        0
+        Constants.FamiliarVariant.MONSTER_MANUAL_FAMILIAR
     )
 end
 ImprovedMonsterManualMod:AddCallback(
