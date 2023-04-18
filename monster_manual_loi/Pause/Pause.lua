@@ -1,4 +1,8 @@
----@diagnostic disable: duplicate-set-field
+local CONTINOUSLY_SPAWNING_EFFECTS = {
+    [EffectVariant.WATER_DROPLET] = true,
+    [EffectVariant.RAIN_DROP] = true
+}
+
 local function OnTSILLoad()
     TSIL.SaveManager.AddPersistentVariable(
         TSIL.__MOD,
@@ -21,6 +25,8 @@ TSIL.__AddInternalCallback(
 )
 
 
+---@param records any
+---@param tearProjectile EntityTear | EntityProjectile
 local function RecordTearProjectile(records, tearProjectile)
     local ptrHash = GetPtrHash(tearProjectile)
 
@@ -92,6 +98,8 @@ local function UsePause()
 end
 
 
+---@param record any
+---@param tearProjectile EntityTear | EntityProjectile
 local function RestoreTearProjectile(record, tearProjectile)
     tearProjectile.Position = record.position
     tearProjectile.Velocity = Vector.Zero
@@ -134,6 +142,8 @@ local function RestoreTearProjectiles()
 end
 
 
+---@param record any
+---@param tear EntityTear
 local function CompletelyRestoreTear(record, tear)
     tear.Position = record.position
     tear.Velocity = record.velocity
@@ -197,6 +207,8 @@ TSIL.__AddInternalCallback(
 
 local shouldUnpause = false
 
+---@param entity Entity
+---@param button ButtonAction
 local function OnInput(_, entity, _, button)
     if not shouldUnpause then return end
 
@@ -204,7 +216,7 @@ local function OnInput(_, entity, _, button)
     if button ~= ButtonAction.ACTION_SHOOTRIGHT then return end
 
     shouldUnpause = false
-    return 1
+    return 0.75
 end
 TSIL.__AddInternalCallback(
     "ON_INPUT_PAUSE",
@@ -215,7 +227,33 @@ TSIL.__AddInternalCallback(
 )
 
 
+---@param effect EntityEffect
+local function OnEffectInit(_, effect)
+    --Effects only pause if they are there when the item is used.
+    --Since we are using the item every frame, every single spawned effect will be paused too.
+
+    --This can cause lag in some rooms in downpour where water drops spawn continously, for example
+    if not CONTINOUSLY_SPAWNING_EFFECTS[effect.Variant] then return end
+
+    if TSIL.Pause.IsPaused() then
+        effect:Remove()
+    end
+end
+TSIL.__AddInternalCallback(
+    "ON_EFFECT_INIT_PAUSE",
+    ModCallbacks.MC_POST_EFFECT_INIT,
+    OnEffectInit,
+    CallbackPriority.DEFAULT
+)
+
+
+---Helper function to pause the game similarly to how the game does when showing a giant book
+---or an achievement.
+---
+---Internally it's done by using the pause item on every frame and keeping track of every tear
+---and projectile's states.
 function TSIL.Pause.Pause()
+    --The game is already paused, don't do anything
     if TSIL.Pause.IsPaused() then return end
 
     TSIL.SaveManager.SetPersistentVariable(
@@ -234,7 +272,11 @@ function TSIL.Pause.Pause()
 end
 
 
+---Unpauses the game if it was previously paused by `TSIL.Pause.Pause()`.
+---
+---Because of limitations with the Pause item, this will remove all projectiles.
 function TSIL.Pause.Unpause()
+    --The game is already unpaused, don't do anything
     if not TSIL.Pause.IsPaused() then return end
 
     TSIL.SaveManager.SetPersistentVariable(
@@ -258,6 +300,8 @@ function TSIL.Pause.Unpause()
 end
 
 
+---Helper function to check if the game is being paused by the library
+---@return boolean
 function TSIL.Pause.IsPaused()
     return TSIL.SaveManager.GetPersistentVariable(
         TSIL.__MOD,

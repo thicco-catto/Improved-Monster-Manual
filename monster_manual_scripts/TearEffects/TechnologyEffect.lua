@@ -64,15 +64,18 @@ local function ShootTechLaser(tear)
     local rng = TSIL.RNG.NewRNG(tear.InitSeed)
     local shootAngle = TSIL.Random.GetRandomInt(0, 360, rng)
 
+    local player = familiar.Player
+
     local laser = EntityLaser.ShootAngle(
         LaserVariant.THIN_RED,
         tear.Position + Vector(0, tear.Height),
         shootAngle,
         5,
         Vector.Zero,
-        nil
+        player
     )
     laser.CollisionDamage = familiarStats.Damage
+    laser.DisableFollowParent = true
 
     local room = Game():GetRoom()
     if room:HasWater() then
